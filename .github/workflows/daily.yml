@@ -25,8 +25,6 @@ jobs:
   report:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # 인증키는 KRX_API_KEY 환경(Environment)의 Secret 에 있다. 레포 Secret 으로 옮겨도 그대로 동작한다.
-    environment: KRX_API_KEY
     env:
       TZ: Asia/Seoul
     steps:
@@ -63,13 +61,10 @@ jobs:
       # KRX 호출이 실패하면 여기서 실패로 끝나고, 사이트는 이전 리포트를 그대로 유지한다.
       - name: Run screener
         env:
-          KRX_API_KEY: ${{ secrets.KRX_API_KEY || vars.KRX_API_KEY }}
-          HAS_SECRET: ${{ secrets.KRX_API_KEY != '' }}
-          HAS_VAR: ${{ vars.KRX_API_KEY != '' }}
+          KRX_API_KEY: ${{ secrets.KRX_API_KEY }}
         run: |
-          echo "KRX_API_KEY 출처 - secret: $HAS_SECRET, variable: $HAS_VAR"
           if [ -z "$KRX_API_KEY" ]; then
-            echo "::error title=KRX 수신 실패::KRX_API_KEY 를 찾지 못했습니다 (secret: $HAS_SECRET, variable: $HAS_VAR). Settings > Secrets and variables > Actions 에 등록하세요."
+            echo "::error title=KRX 수신 실패::레포 Secret KRX_API_KEY 가 없습니다. Settings > Secrets and variables > Actions > Secrets 에 등록하세요."
             exit 1
           fi
           # 결과 표는 공개 로그에 남기지 않는다. 기준일 헤더만 출력.
