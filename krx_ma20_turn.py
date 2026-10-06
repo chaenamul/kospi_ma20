@@ -713,7 +713,8 @@ def build_report(rows, charts, dates, args, path):
             h.append("</section>")
         h.append("</div>")
 
-    h.append("<p class='foot'>KRX Open API 데이터로 계산한 기술적 조건 필터 결과이며 투자 권유가 아닙니다.</p>")
+    h.append("<p class='foot'>이 화면은 “한국거래소 통계정보”(KRX Open API)를 사용한 결과입니다. "
+             "기술적 조건으로 걸러낸 결과이며 투자 권유가 아닙니다.</p>")
     data_json = json.dumps({str(k): c for k, c in enumerate(charts)}, ensure_ascii=False).replace("</", "<\\/")
     h.append(f"</main><div id='tip'></div><script id='chart-data' type='application/json'>{data_json}</script>")
     h.append(f"<script>{JS.replace('__PER_PAGE__', str(PER_PAGE))}</script></body></html>")
