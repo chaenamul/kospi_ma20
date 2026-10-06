@@ -25,9 +25,8 @@ jobs:
   report:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+    # 인증키는 KRX_API_KEY 환경(Environment)의 Secret 에 있다. 레포 Secret 으로 옮겨도 그대로 동작한다.
+    environment: KRX_API_KEY
     env:
       TZ: Asia/Seoul
     steps:
@@ -109,6 +108,13 @@ jobs:
           path: site
           retention-days: 1
 
+  deploy:
+    needs: report
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
         id: deploy
         uses: actions/deploy-pages@v4
