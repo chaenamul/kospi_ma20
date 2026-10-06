@@ -73,10 +73,8 @@ jobs:
           }
           head -n 5 screener.log
 
-      # 사이트 공개는 저장소 변수 PUBLISH_SITE=true 일 때만 한다 (기본 꺼짐).
-      # KRX OPEN API 이용약관 제11조 2항(제3자 제공 금지)을 검토한 뒤 켤 것.
+      # 사이트의 리포트는 SITE_PASSWORD 로 암호화되어 올라간다. 비밀번호가 없으면 Build site 단계에서 실패한다.
       - name: Load previous site
-        if: vars.PUBLISH_SITE == 'true'
         uses: actions/checkout@v4
         with:
           ref: gh-pages
@@ -84,14 +82,14 @@ jobs:
         continue-on-error: true   # 첫 실행에는 gh-pages 브랜치가 없다
 
       - name: Build site
-        if: vars.PUBLISH_SITE == 'true'
+        env:
+          SITE_PASSWORD: ${{ secrets.SITE_PASSWORD }}
         run: |
           rm -rf site/.git
           python scripts/build_site.py results site --keep 30
 
       # 지난 리포트 보관: gh-pages 는 항상 커밋 1개만 남기도록 강제 푸시 (레포 용량이 쌓이지 않게)
       - name: Store archive in gh-pages
-        if: vars.PUBLISH_SITE == 'true'
         run: |
           cd site
           git init -q -b gh-pages
@@ -103,11 +101,10 @@ jobs:
             "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" gh-pages
 
       - uses: actions/upload-pages-artifact@v3
-        if: vars.PUBLISH_SITE == 'true'
         with:
           path: site
+          retention-days: 1
 
       - name: Deploy to GitHub Pages
-        if: vars.PUBLISH_SITE == 'true'
         id: deploy
         uses: actions/deploy-pages@v4

@@ -2,12 +2,16 @@
 
 KOSPI 계열 지수와 주식형·원자재 ETF 중에서 20일 이동평균(주가·거래량)이 하락하다가 상승으로 돌아선 종목을 찾아 리포트로 보여줍니다. GitHub Actions가 매일 실행하고, 결과는 GitHub Pages 사이트에 올라갑니다.
 
-- 최신 리포트: `https://<계정>.github.io/<레포>/`
-- 지난 리포트: `https://<계정>.github.io/<레포>/archive.html` (최근 30개 보관)
+- 최신 리포트: `https://chaenamul.github.io/kospi_ma20/`
+- 지난 리포트: `https://chaenamul.github.io/kospi_ma20/archive.html` (최근 30개 보관)
+
+리포트는 비밀번호로 암호화되어 올라가고, 브라우저에서 비밀번호를 입력해야 열립니다. 한 번 열면 그 브라우저가 비밀번호를 기억합니다. 모든 페이지에 검색엔진 수집 금지(noindex)가 표시되어 있습니다.
 
 기술적 조건으로 걸러낸 결과일 뿐이며 투자 권유가 아닙니다.
 
 ## 데이터
+
+KRX OPEN API 이용약관에 따라 리포트에 “한국거래소 통계정보”를 사용했다는 문구를 표시하고, 비상업적 용도로만 사용합니다. 약관 제11조 2항은 받은 정보를 제3자에게 제공하지 못하게 하고 있으니 사이트 주소와 비밀번호는 필요한 사람에게만 공유하세요.
 
 KRX Open API의 두 서비스를 사용합니다. 호출이 실패하면 실행이 실패로 끝나고 사이트는 이전 리포트를 유지합니다.
 
@@ -18,8 +22,9 @@ KRX는 전 거래일 데이터를 다음 날 아침에 반영합니다. 그래�
 
 ## 처음 설정
 
-1. **인증키 등록**: Settings → Secrets and variables → Actions → New repository secret
-   이름 `KRX_API_KEY`, 값에 KRX Open API 인증키
+1. **Secret 2개 등록**: Settings → Secrets and variables → Actions → **Secrets** 탭 → New repository secret
+   - `KRX_API_KEY`: KRX Open API 인증키
+   - `SITE_PASSWORD`: 사이트 비밀번호 (없으면 사이트를 만들지 않고 실패합니다)
 2. **Pages 켜기**: Settings → Pages → Build and deployment → Source를 **GitHub Actions**로
 3. **첫 실행**: Actions 탭 → Daily MA20 report → Run workflow
 
