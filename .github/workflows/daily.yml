@@ -1,0 +1,93 @@
+name: Daily MA20 report
+
+on:
+  schedule:
+    - cron: "7 1 * * *"   # 매일 10:07 (한국 시간). KRX Open API는 전 거래일 데이터를 다음 날 아침에 반영한다.
+  workflow_dispatch:       # Actions 탭에서 수동 실행
+
+permissions:
+  contents: write   # gh-pages 브랜치에 지난 리포트 보관
+  pages: write      # GitHub Pages 배포
+  id-token: write
+
+concurrency:
+  group: daily-report
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    env:
+      TZ: Asia/Seoul
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      # KRX 응답 캐시: 다음 실행 때 새 날짜만 호출하도록 보관
+      - name: Restore KRX cache
+        uses: actions/cache@v4
+        with:
+          path: cache
+          key: krx-cache-${{ github.run_id }}
+          restore-keys: krx-cache-
+
+      - name: Prune old cache
+        run: |
+          python - <<'EOF'
+          from datetime import date, timedelta
+          from pathlib import Path
+          cut = (date.today() - timedelta(days=150)).strftime("%Y%m%d")
+          n = 0
+          for f in Path("cache").glob("*/*.json"):
+              if f.stem < cut:
+                  f.unlink(); n += 1
+          print(f"removed {n} old cache files")
+          EOF
+
+      # KRX 호출이 실패하면 여기서 실패로 끝나고, 사이트는 이전 리포트를 그대로 유지한다.
+      - name: Run screener
+        env:
+          KRX_API_KEY: ${{ secrets.KRX_API_KEY }}
+        run: python krx_ma20_turn.py --no-open --archive-link archive.html
+
+      - name: Load previous site
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: site
+        continue-on-error: true   # 첫 실행에는 gh-pages 브랜치가 없다
+
+      - name: Build site
+        run: |
+          rm -rf site/.git
+          python scripts/build_site.py results site --keep 30
+
+      # 지난 리포트 보관: gh-pages 는 항상 커밋 1개만 남기도록 강제 푸시 (레포 용량이 쌓이지 않게)
+      - name: Store archive in gh-pages
+        run: |
+          cd site
+          git init -q -b gh-pages
+          git add -A
+          git -c user.name="github-actions[bot]" \
+              -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -q -m "report $(date +%F)"
+          git push -q --force \
+            "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" gh-pages
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
