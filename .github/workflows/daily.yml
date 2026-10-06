@@ -73,7 +73,6 @@ jobs:
           }
           head -n 5 screener.log
 
-      # 사이트의 리포트는 SITE_PASSWORD 로 암호화되어 올라간다. 비밀번호가 없으면 Build site 단계에서 실패한다.
       - name: Load previous site
         uses: actions/checkout@v4
         with:
@@ -82,8 +81,6 @@ jobs:
         continue-on-error: true   # 첫 실행에는 gh-pages 브랜치가 없다
 
       - name: Build site
-        env:
-          SITE_PASSWORD: ${{ secrets.SITE_PASSWORD }}
         run: |
           rm -rf site/.git
           python scripts/build_site.py results site --keep 30
