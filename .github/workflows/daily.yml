@@ -4,6 +4,13 @@ on:
   schedule:
     - cron: "7 1 * * *"   # 매일 10:07 (한국 시간). KRX Open API는 전 거래일 데이터를 다음 날 아침에 반영한다.
   workflow_dispatch:       # Actions 탭에서 수동 실행
+  push:                    # 스크립트나 워크플로를 고치면 바로 다시 실행
+    branches: [main]
+    paths:
+      - krx_ma20_turn.py
+      - scripts/**
+      - requirements.txt
+      - .github/workflows/daily.yml
 
 permissions:
   contents: write   # gh-pages 브랜치에 지난 리포트 보관
