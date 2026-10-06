@@ -65,7 +65,12 @@ jobs:
       - name: Run screener
         env:
           KRX_API_KEY: ${{ secrets.KRX_API_KEY }}
-        run: python krx_ma20_turn.py --no-open --archive-link archive.html
+        run: |
+          set -o pipefail
+          python -u krx_ma20_turn.py --no-open --archive-link archive.html 2>&1 | tee screener.log || {
+            echo "::error title=KRX 수신 실패::$(grep -v '^\s*$' screener.log | tail -n 3 | tr '\n' ' ')"
+            exit 1
+          }
 
       - name: Load previous site
         uses: actions/checkout@v4
