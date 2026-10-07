@@ -2,7 +2,12 @@ name: Daily MA20 report
 
 on:
   schedule:
-    - cron: "7 1 * * *"   # 매일 10:07 (한국 시간). KRX Open API는 전 거래일 데이터를 다음 날 아침에 반영한다.
+    # KRX Open API는 전 거래일 데이터를 다음 날 아침에 반영한다.
+    # GitHub 예약 실행은 지연되거나 건너뛸 수 있어서 하루 세 번 돌린다 (한국 시간 10:07, 13:17, 19:37).
+    # 같은 날 여러 번 실행돼도 캐시를 쓰고 같은 리포트를 다시 만들 뿐이다.
+    - cron: "7 1 * * *"
+    - cron: "17 4 * * *"
+    - cron: "37 10 * * *"
   workflow_dispatch:       # Actions 탭에서 수동 실행
   push:                    # 스크립트나 워크플로를 고치면 바로 다시 실행
     branches: [main]
