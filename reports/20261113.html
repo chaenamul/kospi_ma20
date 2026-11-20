@@ -1,0 +1,297 @@
+<!doctype html><html lang='ko'><head><meta charset='utf-8'><meta name='robots' content='noindex,nofollow,noarchive,nosnippet,noimageindex'>
+<meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>MA20 전환 리포트</title>
+<style>
+:root{color-scheme:light;--page:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;
+--grid:#e1e0d9;--axis:#c3c2b7;--border:rgba(11,11,11,.10);--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--fall:rgba(11,11,11,.045);
+--bar:#c3c2b7;--close:#898781}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--page:#0d0d0d;--surface:#1a1a19;
+--ink:#fff;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.10);
+--s1:#3987e5;--s2:#d95926;--s3:#199e70;--fall:rgba(255,255,255,.05);--bar:#4a4a46;--close:#898781}}
+:root[data-theme="dark"]{color-scheme:dark;--page:#0d0d0d;--surface:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--muted:#898781;
+--grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.10);--s1:#3987e5;--s2:#d95926;--s3:#199e70;--fall:rgba(255,255,255,.05);
+--bar:#4a4a46;--close:#898781}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:14px/1.5 system-ui,-apple-system,"Segoe UI","Malgun Gothic",sans-serif}
+main{max-width:1080px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:22px;margin:0 0 4px}h2{font-size:16px;margin:32px 0 8px}
+.meta{color:var(--ink2);margin:0}.meta b{color:var(--ink)}.meta a{color:var(--ink)}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
+.legend{display:flex;flex-wrap:wrap;gap:16px;color:var(--ink2);font-size:12px;margin:8px 0 0}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.k{display:inline-block;width:16px;height:2px;border-radius:1px}
+.k.sw{height:10px;width:10px;border-radius:2px}.k.dt{width:10px;height:10px;border-radius:50%}
+.chart{width:100%;height:auto;display:block;overflow:visible}
+.grid{stroke:var(--grid);stroke-width:1}.axis{stroke:var(--axis);stroke-width:1}
+.tick{fill:var(--muted);font-size:11px;font-variant-numeric:tabular-nums}
+.axt{fill:var(--ink2);font-size:12px}.note{fill:var(--muted);font-size:11px}
+.lbl{fill:var(--ink);font-size:12px;font-weight:600}
+.fall{fill:var(--fall)}
+.ln-close{fill:none;stroke:var(--close);stroke-width:1.5;stroke-linejoin:round;stroke-linecap:round}
+.ln-ma{fill:none;stroke:var(--s1);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.ln-vma{fill:none;stroke:var(--s2);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.bar{fill:var(--bar)}
+.dot-ma,.dot-a{fill:var(--s1);stroke:var(--surface);stroke-width:2}
+.dot-vma,.dot-b{fill:var(--s2);stroke:var(--surface);stroke-width:2}
+.dot-c{fill:var(--s3);stroke:var(--surface);stroke-width:2}
+.dot-a,.dot-b,.dot-c{cursor:pointer}.dot-a:hover,.dot-b:hover,.dot-c:hover{r:7}
+.cross{stroke:var(--ink2);stroke-width:1}.hit{fill:transparent;cursor:crosshair}
+.tw{overflow-x:auto}.sc{min-width:600px}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{padding:7px 10px;border-bottom:1px solid var(--grid);text-align:right;white-space:nowrap}
+th{color:var(--ink2);font-weight:600;cursor:pointer;user-select:none}
+th.t,td.t{text-align:left}th[aria-sort]::after{content:" ▾";color:var(--muted)}
+th[aria-sort="ascending"]::after{content:" ▴"}
+tbody tr:hover{background:var(--fall)}td a{color:var(--ink);text-decoration:none}td a:hover{text-decoration:underline}
+.bc{display:inline-flex;align-items:center;gap:8px;justify-content:flex-end}
+.bt{display:inline-block;width:70px;height:6px;border-radius:3px;background:var(--grid);position:relative;overflow:hidden}
+.bf{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--s1)}
+.pager{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:0 0 10px}
+.pager button{min-width:32px;height:32px;padding:0 8px;border:1px solid var(--border);border-radius:6px;
+background:var(--surface);color:var(--ink2);font:inherit;font-size:13px;font-variant-numeric:tabular-nums;cursor:pointer}
+.pager button:hover:not(:disabled):not([aria-current]){background:var(--fall);color:var(--ink)}
+.pager button[aria-current="page"]{background:var(--ink);border-color:var(--ink);color:var(--surface);font-weight:600}
+.pager button:disabled{opacity:.35;cursor:default}
+.pager .info{margin-left:auto;color:var(--muted);font-size:12px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,480px),1fr));gap:16px}
+.card h3{font-size:15px;margin:0}.card .sub{color:var(--muted);font-size:12px;margin:2px 0 10px}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:0 0 10px}
+.stats div{font-size:11px;color:var(--ink2)}.stats b{display:block;font-size:15px;color:var(--ink);font-weight:600}
+#tip{position:fixed;pointer-events:none;background:var(--surface);color:var(--ink);border:1px solid var(--border);
+border-radius:8px;padding:8px 10px;font-size:12px;box-shadow:0 4px 16px rgba(0,0,0,.12);display:none;z-index:9;
+font-variant-numeric:tabular-nums;white-space:nowrap}
+#tip .r{display:flex;gap:12px;justify-content:space-between}#tip .r span:first-child{color:var(--ink2)}
+.empty{color:var(--ink2);padding:24px 0}
+.foot{color:var(--muted);font-size:12px;margin-top:32px}
+@media (max-width:560px){.stats{grid-template-columns:repeat(3,1fr)}}
+</style></head><body><main>
+<h1>MA20 하락 → 상승 전환</h1>
+<p class='meta'>데이터 기준일 <b>2026-11-13</b> · 사용 기간 2026-08-10 ~ 2026-11-13 (거래일 65일) · 실행 2026-11-16 16:35 · <a class='archive' href='../archive.html'>지난 리포트</a></p>
+<p class='meta'>조건: 주가 MA20 + 거래량 VMA20 상승 전환, 최근 3거래일 이내, MA20 하락 5거래일 이상 · ETF 유형: 주식, 원자재 (인버스 제외) · 결과 <b>1개</b> (지수 0, ETF 1)</p>
+<h2>하락 깊이와 반등 기울기</h2><div class='panel'><div class='tw'><div class='sc'>
+<svg viewBox="0 0 900 300" class="chart" role="img" aria-label="하락 폭 대비 현재 MA20 기울기 산점도">
+<line class="grid" x1="60" x2="884" y1="256.0" y2="256.0"/>
+<text class="tick" x="54" y="259.5" text-anchor="end">0</text>
+<line class="grid" x1="60" x2="884" y1="196.0" y2="196.0"/>
+<text class="tick" x="54" y="199.5" text-anchor="end">0.025</text>
+<line class="grid" x1="60" x2="884" y1="136.0" y2="136.0"/>
+<text class="tick" x="54" y="139.5" text-anchor="end">0.05</text>
+<line class="grid" x1="60" x2="884" y1="76.0" y2="76.0"/>
+<text class="tick" x="54" y="79.5" text-anchor="end">0.075</text>
+<line class="grid" x1="60" x2="884" y1="16.0" y2="16.0"/>
+<text class="tick" x="54" y="19.5" text-anchor="end">0.1</text>
+<text class="tick" x="60.0" y="272" text-anchor="middle">-20</text>
+<text class="tick" x="266.0" y="272" text-anchor="middle">-15</text>
+<text class="tick" x="472.0" y="272" text-anchor="middle">-10</text>
+<text class="tick" x="678.0" y="272" text-anchor="middle">-5</text>
+<text class="tick" x="884.0" y="272" text-anchor="middle">0</text>
+<line class="axis" x1="60" x2="884" y1="256" y2="256"/>
+<text class="axt" x="472" y="294" text-anchor="middle">MA20 하락 폭 (%) — 왼쪽일수록 깊게 하락</text>
+<text class="axt" x="14" y="136" text-anchor="middle" transform="rotate(-90 14 136)">현재 MA20 기울기 (%/일)</text>
+<a href="#card-0"><circle class="dot-b" cx="136.2" cy="37.6" r="5" data-tip="1Q 미국우주항공테크 · 하락 -18.15% · 기울기 0.091%/일"/></a>
+</svg>
+</div></div>
+<div class='legend'><span><i class='k dt' style='background:var(--s2)'></i>주식 ETF</span><span>점을 누르면 해당 차트로 이동</span></div></div>
+<h2>전환 정도 (기울기 개선폭 순)</h2><nav class='pager' id='pager-tbl' aria-label='표 페이지'></nav><div class='panel tw'><table class='sortable'><thead><tr>
+<th class='t'>구분</th>
+<th class='t'>유형</th>
+<th class='t'>이름</th>
+<th class='t'>코드</th>
+<th class=''>하락 기간(일)</th>
+<th class=''>하락 폭(%)</th>
+<th class=''>전환(일 전)</th>
+<th class=''>현재 기울기(%/일)</th>
+<th class='' aria-sort='descending'>기울기 개선폭(%p)</th>
+<th class=''>반등 폭(%)</th>
+<th class=''>종가/MA20(%)</th>
+<th class=''>거래량 전환(일 전)</th>
+<th class=''>VMA20 반등(%)</th>
+<th class=''>거래량/VMA20(배)</th>
+<th class=''>거래대금(억)</th>
+</tr></thead><tbody>
+<tr>
+<td class='t' data-v='ETF'>ETF</td>
+<td class='t' data-v='주식'>주식</td>
+<td class='t' data-v='1Q 미국우주항공테크'><a href='#card-0'>1Q 미국우주항공테크</a></td>
+<td class='t' data-v='0131V0'>0131V0</td>
+<td data-v='42'>42+</td>
+<td data-v='-18.15'>-18.15</td>
+<td data-v='2'>2</td>
+<td data-v='0.091'>0.091</td>
+<td data-v='1.106'><span class='bc'>1.106<i class='bt'><i class='bf' style='width:100%'></i></i></span></td>
+<td data-v='0.67'>0.67</td>
+<td data-v='2.35'>2.35</td>
+<td data-v='0'>0</td>
+<td data-v='0.9'>0.9</td>
+<td data-v='1.66'>1.66</td>
+<td data-v='9.7'>9.7</td>
+</tr>
+</tbody></table></div>
+<h2>개별 차트</h2><nav class='pager' id='pager-cards' aria-label='차트 페이지'></nav>
+<div class='legend' style='margin:0 0 12px'><span><i class='k' style='background:var(--close)'></i>종가</span><span><i class='k' style='background:var(--s1)'></i>MA20</span><span><i class='k dt' style='background:var(--s1)'></i>MA20 전환점</span><span><i class='k sw' style='background:var(--bar)'></i>거래량</span><span><i class='k' style='background:var(--s2)'></i>거래량 MA20</span><span><i class='k dt' style='background:var(--s2)'></i>거래량 MA20 전환점</span><span><i class='k sw' style='background:var(--fall);outline:1px solid var(--grid)'></i>MA20 하락 구간</span></div><div class='cards'>
+<section class='panel card' id='card-0'><h3>1Q 미국우주항공테크</h3><p class='sub'>주식 ETF · 0131V0 · 종가 9,870 · 평균 거래대금 9.7억</p><div class='stats'><div>하락 기간<b>42+일</b></div><div>하락 폭<b>-18.15%</b></div><div>반등 폭<b>+0.67%</b></div><div>기울기 개선<b>1.106%p</b></div><div>거래량/평균<b>1.66배</b></div></div>
+<svg viewBox="0 0 500 268" class="chart" data-uid="0" role="img" aria-label="1Q 미국우주항공테크 종가와 MA20, 거래량과 VMA20">
+<rect class="fall" x="180.6" y="20" width="288.8" height="150"/>
+<text class="note" x="184.6" y="32">MA20 하락 구간</text>
+<line class="grid" x1="50" x2="490" y1="170.0" y2="170.0"/>
+<text class="tick" x="44" y="173.5" text-anchor="end">8,000</text>
+<line class="grid" x1="50" x2="490" y1="120.0" y2="120.0"/>
+<text class="tick" x="44" y="123.5" text-anchor="end">10,000</text>
+<line class="grid" x1="50" x2="490" y1="70.0" y2="70.0"/>
+<text class="tick" x="44" y="73.5" text-anchor="end">12,000</text>
+<line class="grid" x1="50" x2="490" y1="20.0" y2="20.0"/>
+<text class="tick" x="44" y="23.5" text-anchor="end">14,000</text>
+<path class="ln-close" d="M50.0,60.1 L56.9,61.0 L63.8,56.8 L70.6,59.2 L77.5,51.4 L84.4,63.0 L91.2,64.9 L98.1,64.8 L105.0,75.2 L111.9,77.5 L118.8,79.8 L125.6,86.2 L132.5,84.0 L139.4,86.5 L146.2,93.9 L153.1,92.1 L160.0,100.6 L166.9,100.1 L173.8,92.5 L180.6,98.5 L187.5,98.5 L194.4,97.8 L201.2,107.5 L208.1,107.9 L215.0,109.0 L221.9,104.4 L228.8,104.9 L235.6,99.2 L242.5,92.8 L249.4,95.9 L256.2,95.5 L263.1,91.2 L270.0,93.1 L276.9,99.5 L283.8,100.8 L290.6,97.9 L297.5,104.4 L304.4,102.5 L311.2,102.4 L318.1,107.1 L325.0,108.5 L331.9,115.4 L338.8,121.1 L345.6,133.8 L352.5,127.6 L359.4,132.1 L366.2,136.9 L373.1,133.5 L380.0,136.5 L386.9,136.9 L393.8,135.1 L400.6,133.4 L407.5,122.6 L414.4,124.8 L421.2,127.8 L428.1,127.9 L435.0,135.4 L441.9,132.5 L448.8,130.9 L455.6,140.9 L462.5,125.5 L469.4,115.4 L476.2,111.8 L483.1,115.5 L490.0,123.2"/>
+<path class="ln-ma" d="M180.6,77.4 L187.5,79.3 L194.4,81.2 L201.2,83.7 L208.1,86.1 L215.0,89.0 L221.9,91.1 L228.8,93.1 L235.6,94.8 L242.5,95.7 L249.4,96.6 L256.2,97.4 L263.1,97.6 L270.0,98.1 L276.9,98.7 L283.8,99.1 L290.6,99.4 L297.5,99.6 L304.4,99.7 L311.2,100.2 L318.1,100.6 L325.0,101.1 L331.9,102.0 L338.8,102.7 L345.6,104.0 L352.5,104.9 L359.4,106.3 L366.2,107.9 L373.1,109.6 L380.0,111.8 L386.9,113.8 L393.8,115.8 L400.6,117.9 L407.5,119.4 L414.4,120.7 L421.2,122.0 L428.1,123.5 L435.0,125.1 L441.9,126.6 L448.8,128.0 L455.6,129.7 L462.5,130.5 L469.4,130.5 L476.2,130.1 L483.1,129.1 L490.0,128.9"/>
+<circle class="dot-ma" cx="476.2" cy="130.1" r="5"/>
+<text class="lbl" x="468.2" y="146.1" text-anchor="end">전환 11-11</text>
+<rect class="bar" x="47.9" y="220.6" width="4.1" height="27.4"/>
+<rect class="bar" x="54.8" y="234.3" width="4.1" height="13.7"/>
+<rect class="bar" x="61.7" y="238.8" width="4.1" height="9.2"/>
+<rect class="bar" x="68.6" y="234.1" width="4.1" height="13.9"/>
+<rect class="bar" x="75.4" y="215.2" width="4.1" height="32.8"/>
+<rect class="bar" x="82.3" y="224.3" width="4.1" height="23.7"/>
+<rect class="bar" x="89.2" y="237.4" width="4.1" height="10.6"/>
+<rect class="bar" x="96.1" y="241.7" width="4.1" height="6.3"/>
+<rect class="bar" x="102.9" y="240.0" width="4.1" height="8.0"/>
+<rect class="bar" x="109.8" y="235.9" width="4.1" height="12.1"/>
+<rect class="bar" x="116.7" y="239.9" width="4.1" height="8.1"/>
+<rect class="bar" x="123.6" y="239.0" width="4.1" height="9.0"/>
+<rect class="bar" x="130.4" y="229.7" width="4.1" height="18.3"/>
+<rect class="bar" x="137.3" y="237.8" width="4.1" height="10.2"/>
+<rect class="bar" x="144.2" y="238.6" width="4.1" height="9.4"/>
+<rect class="bar" x="151.1" y="231.1" width="4.1" height="16.9"/>
+<rect class="bar" x="157.9" y="241.2" width="4.1" height="6.8"/>
+<rect class="bar" x="164.8" y="236.0" width="4.1" height="12.0"/>
+<rect class="bar" x="171.7" y="234.0" width="4.1" height="14.0"/>
+<rect class="bar" x="178.6" y="240.5" width="4.1" height="7.5"/>
+<rect class="bar" x="185.4" y="233.1" width="4.1" height="14.9"/>
+<rect class="bar" x="192.3" y="239.0" width="4.1" height="9.0"/>
+<rect class="bar" x="199.2" y="235.3" width="4.1" height="12.7"/>
+<rect class="bar" x="206.1" y="241.5" width="4.1" height="6.5"/>
+<rect class="bar" x="212.9" y="239.0" width="4.1" height="9.0"/>
+<rect class="bar" x="219.8" y="240.6" width="4.1" height="7.4"/>
+<rect class="bar" x="226.7" y="238.6" width="4.1" height="9.4"/>
+<rect class="bar" x="233.6" y="231.5" width="4.1" height="16.5"/>
+<rect class="bar" x="240.4" y="241.0" width="4.1" height="7.0"/>
+<rect class="bar" x="247.3" y="221.5" width="4.1" height="26.5"/>
+<rect class="bar" x="254.2" y="214.7" width="4.1" height="33.3"/>
+<rect class="bar" x="261.1" y="222.2" width="4.1" height="25.8"/>
+<rect class="bar" x="267.9" y="236.3" width="4.1" height="11.7"/>
+<rect class="bar" x="274.8" y="240.8" width="4.1" height="7.2"/>
+<rect class="bar" x="281.7" y="243.0" width="4.1" height="5.0"/>
+<rect class="bar" x="288.6" y="239.1" width="4.1" height="8.9"/>
+<rect class="bar" x="295.4" y="232.2" width="4.1" height="15.8"/>
+<rect class="bar" x="302.3" y="225.2" width="4.1" height="22.8"/>
+<rect class="bar" x="309.2" y="240.6" width="4.1" height="7.4"/>
+<rect class="bar" x="316.1" y="238.7" width="4.1" height="9.3"/>
+<rect class="bar" x="322.9" y="239.6" width="4.1" height="8.4"/>
+<rect class="bar" x="329.8" y="226.7" width="4.1" height="21.3"/>
+<rect class="bar" x="336.7" y="230.0" width="4.1" height="18.0"/>
+<rect class="bar" x="343.6" y="231.3" width="4.1" height="16.7"/>
+<rect class="bar" x="350.4" y="227.1" width="4.1" height="20.9"/>
+<rect class="bar" x="357.3" y="241.2" width="4.1" height="6.8"/>
+<rect class="bar" x="364.2" y="231.4" width="4.1" height="16.6"/>
+<rect class="bar" x="371.1" y="211.0" width="4.1" height="37.0"/>
+<rect class="bar" x="377.9" y="241.2" width="4.1" height="6.8"/>
+<rect class="bar" x="384.8" y="234.1" width="4.1" height="13.9"/>
+<rect class="bar" x="391.7" y="229.2" width="4.1" height="18.8"/>
+<rect class="bar" x="398.6" y="236.5" width="4.1" height="11.5"/>
+<rect class="bar" x="405.4" y="242.8" width="4.1" height="5.2"/>
+<rect class="bar" x="412.3" y="238.0" width="4.1" height="10.0"/>
+<rect class="bar" x="419.2" y="235.6" width="4.1" height="12.4"/>
+<rect class="bar" x="426.1" y="239.4" width="4.1" height="8.6"/>
+<rect class="bar" x="432.9" y="240.2" width="4.1" height="7.8"/>
+<rect class="bar" x="439.8" y="229.5" width="4.1" height="18.5"/>
+<rect class="bar" x="446.7" y="230.1" width="4.1" height="17.9"/>
+<rect class="bar" x="453.6" y="226.1" width="4.1" height="21.9"/>
+<rect class="bar" x="460.4" y="231.4" width="4.1" height="16.6"/>
+<rect class="bar" x="467.3" y="233.3" width="4.1" height="14.7"/>
+<rect class="bar" x="474.2" y="239.2" width="4.1" height="8.8"/>
+<rect class="bar" x="481.1" y="242.5" width="4.1" height="5.5"/>
+<rect class="bar" x="487.9" y="224.6" width="4.1" height="23.4"/>
+<line class="axis" x1="50" x2="490" y1="248" y2="248"/>
+<text class="tick" x="44" y="195.5" text-anchor="end">40만</text>
+<text class="tick" x="44" y="251.5" text-anchor="end">0</text>
+<path class="ln-vma" d="M180.6,234.5 L187.5,235.1 L194.4,235.4 L201.2,235.2 L208.1,235.6 L215.0,236.8 L221.9,237.6 L228.8,237.6 L235.6,237.1 L242.5,237.2 L249.4,236.5 L256.2,235.2 L263.1,234.4 L270.0,234.7 L276.9,234.8 L283.8,235.1 L290.6,235.5 L297.5,235.0 L304.4,234.5 L311.2,234.8 L318.1,234.7 L325.0,235.0 L331.9,234.4 L338.8,234.1 L345.6,233.6 L352.5,233.0 L359.4,233.1 L366.2,232.7 L373.1,231.7 L380.0,231.7 L386.9,232.3 L393.8,233.0 L400.6,233.8 L407.5,234.1 L414.4,233.9 L421.2,233.6 L428.1,233.6 L435.0,234.0 L441.9,234.2 L448.8,233.7 L455.6,233.0 L462.5,232.6 L469.4,233.0 L476.2,233.4 L483.1,234.0 L490.0,233.9"/>
+<circle class="dot-vma" cx="490.0" cy="233.9" r="4.5"/>
+<text class="tick" x="50.0" y="262" text-anchor="start">08-10</text>
+<text class="tick" x="270.0" y="262" text-anchor="middle">09-28</text>
+<text class="tick" x="490.0" y="262" text-anchor="end">11-13</text>
+<line class="cross" x1="0" x2="0" y1="20" y2="248" visibility="hidden"/>
+<rect class="hit" x="50" y="20" width="440" height="228" data-l="50" data-xw="6.8750" data-n="65"/>
+</svg>
+</section>
+</div>
+<p class='foot'>이 화면은 “한국거래소 통계정보”(KRX Open API)를 사용한 결과입니다. 기술적 조건으로 걸러낸 결과이며 투자 권유가 아닙니다.</p>
+</main><div id='tip'></div><script id='chart-data' type='application/json'>{"0": {"dates": ["2026-08-10", "2026-08-11", "2026-08-12", "2026-08-13", "2026-08-14", "2026-08-18", "2026-08-19", "2026-08-20", "2026-08-21", "2026-08-24", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28", "2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04", "2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11", "2026-09-14", "2026-09-15", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-21", "2026-09-22", "2026-09-23", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22", "2026-10-23", "2026-10-26", "2026-10-27", "2026-10-28", "2026-10-29", "2026-10-30", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06", "2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13"], "close": [12395, 12360, 12530, 12430, 12745, 12280, 12205, 12210, 11790, 11700, 11610, 11350, 11440, 11340, 11045, 11115, 10775, 10795, 11100, 10860, 10860, 10890, 10500, 10485, 10440, 10625, 10605, 10830, 11090, 10965, 10980, 11150, 11075, 10820, 10770, 10885, 10625, 10700, 10705, 10515, 10460, 10185, 9955, 9450, 9695, 9515, 9325, 9460, 9340, 9325, 9395, 9465, 9895, 9810, 9690, 9685, 9385, 9500, 9565, 9165, 9780, 10185, 10330, 10180, 9870], "ma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 11703.75, 11627.0, 11553.5, 11452.0, 11354.75, 11239.5, 11156.75, 11076.75, 11007.75, 10972.75, 10936.0, 10904.5, 10894.5, 10876.25, 10850.25, 10836.5, 10825.0, 10817.5, 10812.75, 10793.0, 10775.75, 10755.75, 10720.5, 10693.25, 10641.5, 10604.25, 10548.75, 10484.75, 10416.25, 10328.75, 10246.75, 10167.5, 10083.25, 10024.25, 9973.75, 9919.75, 9859.75, 9797.75, 9737.75, 9680.75, 9613.25, 9579.25, 9579.25, 9598.0, 9634.5, 9643.25], "vol": [195632.0, 97704.0, 65948.0, 99000.0, 234141.0, 169354.0, 75740.0, 45339.0, 57285.0, 86739.0, 57511.0, 64209.0, 130620.0, 72595.0, 67090.0, 120666.0, 48707.0, 85607.0, 99673.0, 53418.0, 106513.0, 64051.0, 90381.0, 46400.0, 64001.0, 52610.0, 67055.0, 118205.0, 49846.0, 189392.0, 237732.0, 184642.0, 83751.0, 51437.0, 35442.0, 63558.0, 112833.0, 162813.0, 52717.0, 66467.0, 59917.0, 152129.0, 128763.0, 119352.0, 149111.0, 48734.0, 118672.0, 264471.0, 48356.0, 99641.0, 133930.0, 82196.0, 37289.0, 71573.0, 88761.0, 61418.0, 55517.0, 132244.0, 127617.0, 156152.0, 118778.0, 105279.0, 62985.0, 39096.0, 167318.0], "vma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 96348.9, 91892.9, 90210.3, 91431.9, 88801.9, 80294.9, 74457.8, 74023.5, 77666.8, 77294.9, 82427.5, 91438.6, 97460.2, 95116.8, 94058.9, 92476.4, 89621.1, 92827.4, 96687.6, 94339.9, 94992.3, 92662.5, 97066.4, 98985.5, 102633.1, 106888.6, 106694.8, 109275.6, 116588.9, 116514.4, 112026.9, 106836.8, 101714.5, 99391.4, 100398.2, 103064.1, 102957.1, 100091.4, 98562.9, 102307.9, 106792.1, 109735.2, 107392.7, 104103.8, 100091.0, 101001.4], "peak": "2026-09-07", "trough": "2026-11-10", "turn": "2026-11-11", "vturn": "2026-11-13", "name": "1Q 미국우주항공테크"}}</script>
+<script>
+const tip=document.getElementById('tip');
+const DATA=JSON.parse(document.getElementById('chart-data').textContent);
+function show(e,h){tip.innerHTML=h;tip.style.display='block';
+ const w=tip.offsetWidth,hh=tip.offsetHeight;let x=e.clientX+14,y=e.clientY+14;
+ if(x+w>innerWidth-8)x=e.clientX-w-14;if(y+hh>innerHeight-8)y=e.clientY-hh-14;
+ tip.style.left=x+'px';tip.style.top=y+'px';}
+function hide(){tip.style.display='none';}
+const f=(v,d)=>v==null?'-':Number(v).toLocaleString('ko-KR',{maximumFractionDigits:d});
+document.querySelectorAll('svg[data-uid]').forEach(svg=>{
+ const c=DATA[svg.dataset.uid],hit=svg.querySelector('.hit'),cr=svg.querySelector('.cross');
+ const L=+hit.dataset.l,xw=+hit.dataset.xw,n=+hit.dataset.n,dec=c.close[0]<1000?2:0;
+ hit.addEventListener('mousemove',e=>{
+  const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;const q=p.matrixTransform(svg.getScreenCTM().inverse());
+  const k=Math.max(0,Math.min(n-1,Math.round((q.x-L)/xw)));const x=L+k*xw;
+  cr.setAttribute('x1',x);cr.setAttribute('x2',x);cr.setAttribute('visibility','visible');
+  show(e,`<b>${c.dates[k]}</b><div class="r"><span>종가</span><span>${f(c.close[k],dec)}</span></div>`+
+   `<div class="r"><span>MA20</span><span>${f(c.ma[k],2)}</span></div>`+
+   `<div class="r"><span>거래량</span><span>${f(c.vol[k],0)}</span></div>`+
+   `<div class="r"><span>VMA20</span><span>${f(c.vma[k],0)}</span></div>`);});
+ hit.addEventListener('mouseleave',()=>{cr.setAttribute('visibility','hidden');hide();});
+});
+document.querySelectorAll('circle[data-tip]').forEach(d=>{
+ d.addEventListener('mousemove',e=>show(e,d.dataset.tip));d.addEventListener('mouseleave',hide);});
+document.querySelectorAll('table.sortable').forEach(t=>{
+ t.querySelectorAll('th').forEach((th,i)=>th.addEventListener('click',()=>{
+  const asc=th.getAttribute('aria-sort')==='descending';
+  t.querySelectorAll('th').forEach(h=>h.removeAttribute('aria-sort'));
+  th.setAttribute('aria-sort',asc?'ascending':'descending');
+  const rows=[...t.tBodies[0].rows];
+  rows.sort((a,b)=>{const x=a.cells[i].dataset.v,y=b.cells[i].dataset.v;
+   const nx=parseFloat(x),ny=parseFloat(y);
+   const r=(isNaN(nx)||isNaN(ny))?String(x).localeCompare(String(y),'ko'):nx-ny;return asc?r:-r;});
+  rows.forEach(r=>t.tBodies[0].appendChild(r));
+  PAGERS.tbl&&PAGERS.tbl.go(1);}));});
+
+/* ---- 페이지 넘김 ---- */
+const PER=8, BLOCK=10, PAGERS={};
+function makePager(nav, getItems){
+ let cur=1;
+ const pages=()=>Math.max(1,Math.ceil(getItems().length/PER));
+ function btn(label,page,opts={}){const b=document.createElement('button');b.type='button';b.textContent=label;
+  if(opts.title)b.title=opts.title;if(opts.current)b.setAttribute('aria-current','page');
+  if(opts.disabled)b.disabled=true;else b.addEventListener('click',()=>go(page,true));return b;}
+ function render(){
+  const n=pages(),items=getItems();nav.innerHTML='';
+  const start=Math.floor((cur-1)/BLOCK)*BLOCK+1,end=Math.min(n,start+BLOCK-1);
+  nav.append(btn('‹',cur-1,{disabled:cur===1,title:'이전 페이지'}));
+  if(start>1)nav.append(btn('…',start-1,{title:`${start-1}페이지`}));
+  for(let p=start;p<=end;p++)nav.append(btn(String(p),p,{current:p===cur}));
+  if(end<n)nav.append(btn('…',end+1,{title:`${end+1}페이지`}));
+  nav.append(btn('›',cur+1,{disabled:cur===n,title:'다음 페이지'}));
+  const a=(cur-1)*PER+1,b=Math.min(cur*PER,items.length);
+  const info=document.createElement('span');info.className='info';
+  info.textContent=`${items.length}개 중 ${a}–${b}`;nav.append(info);
+  if(n<=1)nav.style.display='none';}
+ function go(p,scroll){cur=Math.min(Math.max(1,p),pages());
+  getItems().forEach((el,i)=>{el.hidden=!(i>=(cur-1)*PER&&i<cur*PER);});render();
+  if(scroll)nav.scrollIntoView({block:'start',behavior:'smooth'});}
+ go(1);return {go,pageOf:i=>Math.floor(i/PER)+1};}
+const tbody=document.querySelector('table.sortable tbody');
+if(tbody)PAGERS.tbl=makePager(document.getElementById('pager-tbl'),()=>[...tbody.rows]);
+const cardEls=[...document.querySelectorAll('.cards > .card')];
+if(cardEls.length)PAGERS.cards=makePager(document.getElementById('pager-cards'),()=>cardEls);
+/* 표 이름·산점도 점 → 해당 차트 페이지로 이동 */
+document.querySelectorAll('a[href^="#card-"]').forEach(a=>a.addEventListener('click',e=>{
+ const el=document.getElementById(a.getAttribute('href').slice(1));if(!el||!PAGERS.cards)return;
+ e.preventDefault();PAGERS.cards.go(PAGERS.cards.pageOf(cardEls.indexOf(el)));
+ el.scrollIntoView({block:'start',behavior:'smooth'});}));
+</script></body></html>
