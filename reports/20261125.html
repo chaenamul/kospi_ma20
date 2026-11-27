@@ -1,0 +1,1307 @@
+<!doctype html><html lang='ko'><head><meta charset='utf-8'><meta name='robots' content='noindex,nofollow,noarchive,nosnippet,noimageindex'>
+<meta name='viewport' content='width=device-width,initial-scale=1'>
+<title>MA20 전환 리포트</title>
+<style>
+:root{color-scheme:light;--page:#f9f9f7;--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;
+--grid:#e1e0d9;--axis:#c3c2b7;--border:rgba(11,11,11,.10);--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--fall:rgba(11,11,11,.045);
+--bar:#c3c2b7;--close:#898781}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--page:#0d0d0d;--surface:#1a1a19;
+--ink:#fff;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.10);
+--s1:#3987e5;--s2:#d95926;--s3:#199e70;--fall:rgba(255,255,255,.05);--bar:#4a4a46;--close:#898781}}
+:root[data-theme="dark"]{color-scheme:dark;--page:#0d0d0d;--surface:#1a1a19;--ink:#fff;--ink2:#c3c2b7;--muted:#898781;
+--grid:#2c2c2a;--axis:#383835;--border:rgba(255,255,255,.10);--s1:#3987e5;--s2:#d95926;--s3:#199e70;--fall:rgba(255,255,255,.05);
+--bar:#4a4a46;--close:#898781}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:14px/1.5 system-ui,-apple-system,"Segoe UI","Malgun Gothic",sans-serif}
+main{max-width:1080px;margin:0 auto;padding:24px 16px 64px}
+h1{font-size:22px;margin:0 0 4px}h2{font-size:16px;margin:32px 0 8px}
+.meta{color:var(--ink2);margin:0}.meta b{color:var(--ink)}.meta a{color:var(--ink)}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
+.legend{display:flex;flex-wrap:wrap;gap:16px;color:var(--ink2);font-size:12px;margin:8px 0 0}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.k{display:inline-block;width:16px;height:2px;border-radius:1px}
+.k.sw{height:10px;width:10px;border-radius:2px}.k.dt{width:10px;height:10px;border-radius:50%}
+.chart{width:100%;height:auto;display:block;overflow:visible}
+.grid{stroke:var(--grid);stroke-width:1}.axis{stroke:var(--axis);stroke-width:1}
+.tick{fill:var(--muted);font-size:11px;font-variant-numeric:tabular-nums}
+.axt{fill:var(--ink2);font-size:12px}.note{fill:var(--muted);font-size:11px}
+.lbl{fill:var(--ink);font-size:12px;font-weight:600}
+.fall{fill:var(--fall)}
+.ln-close{fill:none;stroke:var(--close);stroke-width:1.5;stroke-linejoin:round;stroke-linecap:round}
+.ln-ma{fill:none;stroke:var(--s1);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.ln-vma{fill:none;stroke:var(--s2);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.bar{fill:var(--bar)}
+.dot-ma,.dot-a{fill:var(--s1);stroke:var(--surface);stroke-width:2}
+.dot-vma,.dot-b{fill:var(--s2);stroke:var(--surface);stroke-width:2}
+.dot-c{fill:var(--s3);stroke:var(--surface);stroke-width:2}
+.dot-a,.dot-b,.dot-c{cursor:pointer}.dot-a:hover,.dot-b:hover,.dot-c:hover{r:7}
+.cross{stroke:var(--ink2);stroke-width:1}.hit{fill:transparent;cursor:crosshair}
+.tw{overflow-x:auto}.sc{min-width:600px}
+table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{padding:7px 10px;border-bottom:1px solid var(--grid);text-align:right;white-space:nowrap}
+th{color:var(--ink2);font-weight:600;cursor:pointer;user-select:none}
+th.t,td.t{text-align:left}th[aria-sort]::after{content:" ▾";color:var(--muted)}
+th[aria-sort="ascending"]::after{content:" ▴"}
+tbody tr:hover{background:var(--fall)}td a{color:var(--ink);text-decoration:none}td a:hover{text-decoration:underline}
+.bc{display:inline-flex;align-items:center;gap:8px;justify-content:flex-end}
+.bt{display:inline-block;width:70px;height:6px;border-radius:3px;background:var(--grid);position:relative;overflow:hidden}
+.bf{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--s1)}
+.pager{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin:0 0 10px}
+.pager button{min-width:32px;height:32px;padding:0 8px;border:1px solid var(--border);border-radius:6px;
+background:var(--surface);color:var(--ink2);font:inherit;font-size:13px;font-variant-numeric:tabular-nums;cursor:pointer}
+.pager button:hover:not(:disabled):not([aria-current]){background:var(--fall);color:var(--ink)}
+.pager button[aria-current="page"]{background:var(--ink);border-color:var(--ink);color:var(--surface);font-weight:600}
+.pager button:disabled{opacity:.35;cursor:default}
+.pager .info{margin-left:auto;color:var(--muted);font-size:12px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,480px),1fr));gap:16px}
+.card h3{font-size:15px;margin:0}.card .sub{color:var(--muted);font-size:12px;margin:2px 0 10px}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:0 0 10px}
+.stats div{font-size:11px;color:var(--ink2)}.stats b{display:block;font-size:15px;color:var(--ink);font-weight:600}
+#tip{position:fixed;pointer-events:none;background:var(--surface);color:var(--ink);border:1px solid var(--border);
+border-radius:8px;padding:8px 10px;font-size:12px;box-shadow:0 4px 16px rgba(0,0,0,.12);display:none;z-index:9;
+font-variant-numeric:tabular-nums;white-space:nowrap}
+#tip .r{display:flex;gap:12px;justify-content:space-between}#tip .r span:first-child{color:var(--ink2)}
+.empty{color:var(--ink2);padding:24px 0}
+.foot{color:var(--muted);font-size:12px;margin-top:32px}
+@media (max-width:560px){.stats{grid-template-columns:repeat(3,1fr)}}
+</style></head><body><main>
+<h1>MA20 하락 → 상승 전환</h1>
+<p class='meta'>데이터 기준일 <b>2026-11-25</b> · 사용 기간 2026-08-21 ~ 2026-11-25 (거래일 65일) · 실행 2026-11-26 18:08 · <a class='archive' href='../archive.html'>지난 리포트</a></p>
+<p class='meta'>조건: 주가 MA20 + 거래량 VMA20 상승 전환, 최근 3거래일 이내, MA20 하락 5거래일 이상 · ETF 유형: 주식, 원자재 (인버스 제외) · 결과 <b>10개</b> (지수 1, ETF 9)</p>
+<h2>하락 깊이와 반등 기울기</h2><div class='panel'><div class='tw'><div class='sc'>
+<svg viewBox="0 0 900 300" class="chart" role="img" aria-label="하락 폭 대비 현재 MA20 기울기 산점도">
+<line class="grid" x1="60" x2="884" y1="256.0" y2="256.0"/>
+<text class="tick" x="54" y="259.5" text-anchor="end">0</text>
+<line class="grid" x1="60" x2="884" y1="176.0" y2="176.0"/>
+<text class="tick" x="54" y="179.5" text-anchor="end">0.2</text>
+<line class="grid" x1="60" x2="884" y1="96.0" y2="96.0"/>
+<text class="tick" x="54" y="99.5" text-anchor="end">0.4</text>
+<line class="grid" x1="60" x2="884" y1="16.0" y2="16.0"/>
+<text class="tick" x="54" y="19.5" text-anchor="end">0.6</text>
+<text class="tick" x="60.0" y="272" text-anchor="middle">-25</text>
+<text class="tick" x="224.8" y="272" text-anchor="middle">-20</text>
+<text class="tick" x="389.6" y="272" text-anchor="middle">-15</text>
+<text class="tick" x="554.4" y="272" text-anchor="middle">-10</text>
+<text class="tick" x="719.2" y="272" text-anchor="middle">-5</text>
+<text class="tick" x="884.0" y="272" text-anchor="middle">0</text>
+<line class="axis" x1="60" x2="884" y1="256" y2="256"/>
+<text class="axt" x="472" y="294" text-anchor="middle">MA20 하락 폭 (%) — 왼쪽일수록 깊게 하락</text>
+<text class="axt" x="14" y="136" text-anchor="middle" transform="rotate(-90 14 136)">현재 MA20 기울기 (%/일)</text>
+<a href="#card-0"><circle class="dot-b" cx="97.2" cy="58.0" r="5" data-tip="TIGER 화장품 · 하락 -23.87% · 기울기 0.495%/일"/></a>
+<a href="#card-1"><circle class="dot-b" cx="705.0" cy="64.0" r="5" data-tip="KODEX 코스닥150롱코스피200숏선물 · 하락 -5.43% · 기울기 0.48%/일"/></a>
+<a href="#card-2"><circle class="dot-b" cx="788.7" cy="249.6" r="5" data-tip="KoAct 바이오헬스케어액티브 · 하락 -2.89% · 기울기 0.016%/일"/></a>
+<a href="#card-3"><circle class="dot-b" cx="799.3" cy="254.0" r="5" data-tip="TIGER 기술이전바이오액티브 · 하락 -2.57% · 기울기 0.005%/일"/></a>
+<a href="#card-4"><circle class="dot-b" cx="452.6" cy="244.8" r="5" data-tip="RISE 내수주플러스 · 하락 -13.09% · 기울기 0.028%/일"/></a>
+<a href="#card-5"><circle class="dot-b" cx="508.6" cy="241.2" r="5" data-tip="TIGER 200 생활소비재 · 하락 -11.39% · 기울기 0.037%/일"/></a>
+<a href="#card-6"><circle class="dot-b" cx="823.7" cy="235.2" r="5" data-tip="RISE 바이오TOP10액티브 · 하락 -1.83% · 기울기 0.052%/일"/></a>
+<a href="#card-7"><circle class="dot-b" cx="834.9" cy="250.4" r="5" data-tip="HANARO e커머스 · 하락 -1.49% · 기울기 0.014%/일"/></a>
+<a href="#card-8"><circle class="dot-a" cx="843.8" cy="220.4" r="5" data-tip="음식료·담배 · 하락 -1.22% · 기울기 0.089%/일"/></a>
+<a href="#card-9"><circle class="dot-b" cx="845.4" cy="231.6" r="5" data-tip="HANARO Fn K-푸드 · 하락 -1.17% · 기울기 0.061%/일"/></a>
+</svg>
+</div></div>
+<div class='legend'><span><i class='k dt' style='background:var(--s1)'></i>지수</span><span><i class='k dt' style='background:var(--s2)'></i>주식 ETF</span><span>점을 누르면 해당 차트로 이동</span></div></div>
+<h2>전환 정도 (기울기 개선폭 순)</h2><nav class='pager' id='pager-tbl' aria-label='표 페이지'></nav><div class='panel tw'><table class='sortable'><thead><tr>
+<th class='t'>구분</th>
+<th class='t'>유형</th>
+<th class='t'>이름</th>
+<th class='t'>코드</th>
+<th class=''>하락 기간(일)</th>
+<th class=''>하락 폭(%)</th>
+<th class=''>전환(일 전)</th>
+<th class=''>현재 기울기(%/일)</th>
+<th class='' aria-sort='descending'>기울기 개선폭(%p)</th>
+<th class=''>반등 폭(%)</th>
+<th class=''>종가/MA20(%)</th>
+<th class=''>거래량 전환(일 전)</th>
+<th class=''>VMA20 반등(%)</th>
+<th class=''>거래량/VMA20(배)</th>
+<th class=''>거래대금(억)</th>
+</tr></thead><tbody>
+<tr>
+<td class='t' data-v='ETF'>ETF</td>
+<td class='t' data-v='주식'>주식</td>
+<td class='t' data-v='TIGER 화장품'><a href='#card-0'>TIGER 화장품</a></td>
+<td class='t' data-v='228790'>228790</td>
+<td data-v='43'>43+</td>
+<td data-v='-23.87'>-23.87</td>
+<td data-v='1'>1</td>
+<td data-v='0.495'>0.495</td>
+<td data-v='1.497'><span class='bc'>1.497<i class='bt'><i class='bf' style='width:100%'></i></i></span></td>
+<td data-v='0.61'>0.61</td>
+<td data-v='12.81'>12.81</td>
+<td data-v='2'>2</td>
+<td data-v='19.3'>19.3</td>
+<td data-v='2.39'>2.39</td>
+<td data-v='147.1'>147.1</td>
+</tr>
+<tr>
+<td class='t' data-v='ETF'>ETF</td>
+<td class='t' data-v='주식'>주식</td>
+<td class='t' data-v='KODEX 코스닥150롱코스피200숏선물'><a href='#card-1'>KODEX 코스닥150롱코스피200숏선물</a></td>
+<td class='t' data-v='360150'>360150</td>
+<td data-v='16'>16</td>
+<td data-v='-5.43'>-5.43</td>
+<td data-v='2'>2</td>
+<td data-v='0.48'>0.48</td>
+<td data-v='1.087'><span class='bc'>1.087<i class='bt'><i class='bf' style='width:73%'></i></i></span></td>
+<td data-v='0.68'>0.68</td>
+<td data-v='8.56'>8.56</td>
+<td data-v='1'>1</td>
+<td data-v='4.8'>4.8</td>
+<td data-v='1.49'>1.49</td>
+<td data-v='1.1'>1.1</td>
+</tr>
+<tr>
+<td class='t' data-v='ETF'>ETF</td>
+<td class='t' data-v='주식'>주식</td>
+<td class='t' data-v='KoAct 바이오헬스케어액티브'><a href='#card-2'>KoAct 바이오헬스케어액티브</a></td>
+<td class='t' data-v='462900'>462900</td>
+<td data-v='8'>8</td>
+<td data-v='-2.89'>-2.89</td>
+<td data-v='0'>0</td>
+<td data-v='0.016'>0.016</td>
+<td data-v='0.638'><span class='bc'>0.638<i class='bt'><i class='bf' style='width:43%'></i></i></span></td>
+<td data-v='0.02'>0.02</td>
+<td data-v='2.7'>2.7</td>
+<td data-v='0'>0</td>
+<td data-v='1.4'>1.4</td>
+<td data-v='1.61'>1.61</td>
+<td data-v='62.2'>62.2</td>
+</tr>
+<tr>
+<td class='t' data-v='ETF'>ETF</td>
+<td class='t' data-v='주식'>주식</td>
+<td class='t' data-v='TIGER 기술이전바이오액티브'><a href='#card-3'>TIGER 기술이전바이오액티브</a></td>
+<td class='t' data-v='0168K0'>0168K0</td>
+<td data-v='8'>8</td>
+<td data-v='-2.57'>-2.57</td>
+<td data-v='0'>0</td>
+<td data-v='0.005'>0.005</td>
+<td data-v='0.581'><span class='bc'>0.581<i class='bt'><i class='bf' style='width:39%'></i></i></span></td>
+<td data-v='0.01'>0.01</td>
+<td data-v='3.2'>3.2</td>
+<td data-v='0'>0</td>
+<td data-v='0.4'>0.4</td>
+<td data-v='1.9'>1.9</td>
+<td data-v='30.3'>30.3</td>
+</tr>
+<tr>
+<td class='t' data-v='ETF'>ETF</td>
+<td class='t' data-v='주식'>주식</td>
+<td class='t' data-v='RISE 내수주플러스'><a href='#card-4'>RISE 내수주플러스</a></td>
+<td class='t' data-v='326230'>326230</td>
+<td data-v='44'>44+</td>
+<td data-v='-13.09'>-13.09</td>
+<td data-v='0'>0</td>
+<td data-v='0.028'>0.028</td>
+<td data-v='0.553'><span class='bc'>0.553<i class='bt'><i class='bf' style='width:37%'></i></i></span></td>
+<td data-v='0.03'>0.03</td>
+<td data-v='1.74'>1.74</td>
+<td data-v='0'>0</td>
+<td data-v='3.1'>3.1</td>
+<td data-v='0.62'>0.62</td>
+<td data-v='0.3'>0.3</td>
+</tr>
+<tr>
+<td class='t' data-v='ETF'>ETF</td>
+<td class='t' data-v='주식'>주식</td>
+<td class='t' data-v='TIGER 200 생활소비재'><a href='#card-5'>TIGER 200 생활소비재</a></td>
+<td class='t' data-v='227560'>227560</td>
+<td data-v='44'>44+</td>
+<td data-v='-11.39'>-11.39</td>
+<td data-v='0'>0</td>
+<td data-v='0.037'>0.037</td>
+<td data-v='0.552'><span class='bc'>0.552<i class='bt'><i class='bf' style='width:37%'></i></i></span></td>
+<td data-v='0.04'>0.04</td>
+<td data-v='2.78'>2.78</td>
+<td data-v='1'>1</td>
+<td data-v='0.7'>0.7</td>
+<td data-v='0.95'>0.95</td>
+<td data-v='0.4'>0.4</td>
+</tr>
+<tr>
+<td class='t' data-v='ETF'>ETF</td>
+<td class='t' data-v='주식'>주식</td>
+<td class='t' data-v='RISE 바이오TOP10액티브'><a href='#card-6'>RISE 바이오TOP10액티브</a></td>
+<td class='t' data-v='0000Z0'>0000Z0</td>
+<td data-v='7'>7</td>
+<td data-v='-1.83'>-1.83</td>
+<td data-v='1'>1</td>
+<td data-v='0.052'>0.052</td>
+<td data-v='0.51'><span class='bc'>0.510<i class='bt'><i class='bf' style='width:34%'></i></i></span></td>
+<td data-v='0.06'>0.06</td>
+<td data-v='3.54'>3.54</td>
+<td data-v='2'>2</td>
+<td data-v='6.1'>6.1</td>
+<td data-v='1.6'>1.6</td>
+<td data-v='7.1'>7.1</td>
+</tr>
+<tr>
+<td class='t' data-v='ETF'>ETF</td>
+<td class='t' data-v='주식'>주식</td>
+<td class='t' data-v='HANARO e커머스'><a href='#card-7'>HANARO e커머스</a></td>
+<td class='t' data-v='322400'>322400</td>
+<td data-v='10'>10</td>
+<td data-v='-1.49'>-1.49</td>
+<td data-v='0'>0</td>
+<td data-v='0.014'>0.014</td>
+<td data-v='0.348'><span class='bc'>0.348<i class='bt'><i class='bf' style='width:23%'></i></i></span></td>
+<td data-v='0.01'>0.01</td>
+<td data-v='-0.29'>-0.29</td>
+<td data-v='0'>0</td>
+<td data-v='0.6'>0.6</td>
+<td data-v='0.29'>0.29</td>
+<td data-v='0.5'>0.5</td>
+</tr>
+<tr>
+<td class='t' data-v='지수'>지수</td>
+<td class='t' data-v='지수'>지수</td>
+<td class='t' data-v='음식료·담배'><a href='#card-8'>음식료·담배</a></td>
+<td class='t' data-v='KOSPI'>KOSPI</td>
+<td data-v='10'>10</td>
+<td data-v='-1.22'>-1.22</td>
+<td data-v='1'>1</td>
+<td data-v='0.089'>0.089</td>
+<td data-v='0.325'><span class='bc'>0.325<i class='bt'><i class='bf' style='width:22%'></i></i></span></td>
+<td data-v='0.13'>0.13</td>
+<td data-v='1.47'>1.47</td>
+<td data-v='0'>0</td>
+<td data-v='0.7'>0.7</td>
+<td data-v='1.08'>1.08</td>
+<td data-v='1698.7'>1698.7</td>
+</tr>
+<tr>
+<td class='t' data-v='ETF'>ETF</td>
+<td class='t' data-v='주식'>주식</td>
+<td class='t' data-v='HANARO Fn K-푸드'><a href='#card-9'>HANARO Fn K-푸드</a></td>
+<td class='t' data-v='438900'>438900</td>
+<td data-v='11'>11</td>
+<td data-v='-1.17'>-1.17</td>
+<td data-v='0'>0</td>
+<td data-v='0.061'>0.061</td>
+<td data-v='0.309'><span class='bc'>0.309<i class='bt'><i class='bf' style='width:21%'></i></i></span></td>
+<td data-v='0.06'>0.06</td>
+<td data-v='0.41'>0.41</td>
+<td data-v='0'>0</td>
+<td data-v='13.8'>13.8</td>
+<td data-v='2.99'>2.99</td>
+<td data-v='2.0'>2.0</td>
+</tr>
+</tbody></table></div>
+<h2>개별 차트</h2><nav class='pager' id='pager-cards' aria-label='차트 페이지'></nav>
+<div class='legend' style='margin:0 0 12px'><span><i class='k' style='background:var(--close)'></i>종가</span><span><i class='k' style='background:var(--s1)'></i>MA20</span><span><i class='k dt' style='background:var(--s1)'></i>MA20 전환점</span><span><i class='k sw' style='background:var(--bar)'></i>거래량</span><span><i class='k' style='background:var(--s2)'></i>거래량 MA20</span><span><i class='k dt' style='background:var(--s2)'></i>거래량 MA20 전환점</span><span><i class='k sw' style='background:var(--fall);outline:1px solid var(--grid)'></i>MA20 하락 구간</span></div><div class='cards'>
+<section class='panel card' id='card-0'><h3>TIGER 화장품</h3><p class='sub'>주식 ETF · 228790 · 종가 3,950 · 평균 거래대금 147.1억</p><div class='stats'><div>하락 기간<b>43+일</b></div><div>하락 폭<b>-23.87%</b></div><div>반등 폭<b>+0.61%</b></div><div>기울기 개선<b>1.497%p</b></div><div>거래량/평균<b>2.39배</b></div></div>
+<svg viewBox="0 0 500 268" class="chart" data-uid="0" role="img" aria-label="TIGER 화장품 종가와 MA20, 거래량과 VMA20">
+<rect class="fall" x="180.6" y="20" width="295.6" height="150"/>
+<text class="note" x="184.6" y="32">MA20 하락 구간</text>
+<line class="grid" x1="50" x2="490" y1="170.0" y2="170.0"/>
+<text class="tick" x="44" y="173.5" text-anchor="end">3,000</text>
+<line class="grid" x1="50" x2="490" y1="120.0" y2="120.0"/>
+<text class="tick" x="44" y="123.5" text-anchor="end">4,000</text>
+<line class="grid" x1="50" x2="490" y1="70.0" y2="70.0"/>
+<text class="tick" x="44" y="73.5" text-anchor="end">5,000</text>
+<line class="grid" x1="50" x2="490" y1="20.0" y2="20.0"/>
+<text class="tick" x="44" y="23.5" text-anchor="end">6,000</text>
+<path class="ln-close" d="M50.0,92.8 L56.9,82.5 L63.8,77.0 L70.6,78.0 L77.5,82.8 L84.4,65.8 L91.2,68.8 L98.1,80.2 L105.0,86.0 L111.9,89.8 L118.8,94.0 L125.6,98.0 L132.5,102.2 L139.4,104.5 L146.2,107.5 L153.1,105.5 L160.0,100.8 L166.9,104.8 L173.8,102.5 L180.6,105.2 L187.5,103.8 L194.4,104.2 L201.2,107.5 L208.1,107.8 L215.0,106.5 L221.9,105.8 L228.8,111.0 L235.6,110.2 L242.5,116.2 L249.4,113.2 L256.2,105.5 L263.1,112.0 L270.0,118.0 L276.9,130.0 L283.8,128.0 L290.6,130.0 L297.5,118.8 L304.4,120.0 L311.2,126.0 L318.1,126.2 L325.0,130.8 L331.9,135.5 L338.8,140.2 L345.6,141.2 L352.5,139.8 L359.4,145.2 L366.2,147.2 L373.1,143.0 L380.0,145.0 L386.9,149.0 L393.8,141.8 L400.6,147.0 L407.5,153.8 L414.4,149.5 L421.2,148.0 L428.1,151.5 L435.0,153.8 L441.9,149.0 L448.8,148.2 L455.6,145.5 L462.5,137.5 L469.4,142.5 L476.2,141.2 L483.1,137.2 L490.0,122.5"/>
+<path class="ln-ma" d="M180.6,91.4 L187.5,92.0 L194.4,93.1 L201.2,94.6 L208.1,96.1 L215.0,97.3 L221.9,99.3 L228.8,101.4 L235.6,102.9 L242.5,104.4 L249.4,105.6 L256.2,106.1 L263.1,106.8 L270.0,107.6 L276.9,108.9 L283.8,109.9 L290.6,111.2 L297.5,112.1 L304.4,112.8 L311.2,114.0 L318.1,115.0 L325.0,116.4 L331.9,118.0 L338.8,119.6 L345.6,121.3 L352.5,122.9 L359.4,124.9 L366.2,126.7 L373.1,128.3 L380.0,129.8 L386.9,131.6 L393.8,133.4 L400.6,135.1 L407.5,136.9 L414.4,137.9 L421.2,138.9 L428.1,140.0 L435.0,141.7 L441.9,143.2 L448.8,144.3 L455.6,145.2 L462.5,145.6 L469.4,145.9 L476.2,146.0 L483.1,145.8 L490.0,144.9"/>
+<circle class="dot-ma" cx="483.1" cy="145.8" r="5"/>
+<text class="lbl" x="475.1" y="161.8" text-anchor="end">전환 11-24</text>
+<rect class="bar" x="47.9" y="232.6" width="4.1" height="15.4"/>
+<rect class="bar" x="54.8" y="227.7" width="4.1" height="20.3"/>
+<rect class="bar" x="61.7" y="218.9" width="4.1" height="29.1"/>
+<rect class="bar" x="68.6" y="219.9" width="4.1" height="28.1"/>
+<rect class="bar" x="75.4" y="227.6" width="4.1" height="20.4"/>
+<rect class="bar" x="82.3" y="208.3" width="4.1" height="39.7"/>
+<rect class="bar" x="89.2" y="217.1" width="4.1" height="30.9"/>
+<rect class="bar" x="96.1" y="215.7" width="4.1" height="32.3"/>
+<rect class="bar" x="102.9" y="219.8" width="4.1" height="28.2"/>
+<rect class="bar" x="109.8" y="223.1" width="4.1" height="24.9"/>
+<rect class="bar" x="116.7" y="229.5" width="4.1" height="18.5"/>
+<rect class="bar" x="123.6" y="233.7" width="4.1" height="14.3"/>
+<rect class="bar" x="130.4" y="219.1" width="4.1" height="28.9"/>
+<rect class="bar" x="137.3" y="221.1" width="4.1" height="26.9"/>
+<rect class="bar" x="144.2" y="232.6" width="4.1" height="15.4"/>
+<rect class="bar" x="151.1" y="226.5" width="4.1" height="21.5"/>
+<rect class="bar" x="157.9" y="215.4" width="4.1" height="32.6"/>
+<rect class="bar" x="164.8" y="232.5" width="4.1" height="15.5"/>
+<rect class="bar" x="171.7" y="228.5" width="4.1" height="19.5"/>
+<rect class="bar" x="178.6" y="228.8" width="4.1" height="19.2"/>
+<rect class="bar" x="185.4" y="232.9" width="4.1" height="15.1"/>
+<rect class="bar" x="192.3" y="241.0" width="4.1" height="7.0"/>
+<rect class="bar" x="199.2" y="238.0" width="4.1" height="10.0"/>
+<rect class="bar" x="206.1" y="238.3" width="4.1" height="9.7"/>
+<rect class="bar" x="212.9" y="240.7" width="4.1" height="7.3"/>
+<rect class="bar" x="219.8" y="241.3" width="4.1" height="6.7"/>
+<rect class="bar" x="226.7" y="238.2" width="4.1" height="9.8"/>
+<rect class="bar" x="233.6" y="239.1" width="4.1" height="8.9"/>
+<rect class="bar" x="240.4" y="234.9" width="4.1" height="13.1"/>
+<rect class="bar" x="247.3" y="234.0" width="4.1" height="14.0"/>
+<rect class="bar" x="254.2" y="224.8" width="4.1" height="23.2"/>
+<rect class="bar" x="261.1" y="236.6" width="4.1" height="11.4"/>
+<rect class="bar" x="267.9" y="235.2" width="4.1" height="12.8"/>
+<rect class="bar" x="274.8" y="231.0" width="4.1" height="17.0"/>
+<rect class="bar" x="281.7" y="238.6" width="4.1" height="9.4"/>
+<rect class="bar" x="288.6" y="234.1" width="4.1" height="13.9"/>
+<rect class="bar" x="295.4" y="230.7" width="4.1" height="17.3"/>
+<rect class="bar" x="302.3" y="236.0" width="4.1" height="12.0"/>
+<rect class="bar" x="309.2" y="239.3" width="4.1" height="8.7"/>
+<rect class="bar" x="316.1" y="242.8" width="4.1" height="5.2"/>
+<rect class="bar" x="322.9" y="243.8" width="4.1" height="4.2"/>
+<rect class="bar" x="329.8" y="241.0" width="4.1" height="7.0"/>
+<rect class="bar" x="336.7" y="241.4" width="4.1" height="6.6"/>
+<rect class="bar" x="343.6" y="241.7" width="4.1" height="6.3"/>
+<rect class="bar" x="350.4" y="241.7" width="4.1" height="6.3"/>
+<rect class="bar" x="357.3" y="236.3" width="4.1" height="11.7"/>
+<rect class="bar" x="364.2" y="221.7" width="4.1" height="26.3"/>
+<rect class="bar" x="371.1" y="236.7" width="4.1" height="11.3"/>
+<rect class="bar" x="377.9" y="238.0" width="4.1" height="10.0"/>
+<rect class="bar" x="384.8" y="237.3" width="4.1" height="10.7"/>
+<rect class="bar" x="391.7" y="234.9" width="4.1" height="13.1"/>
+<rect class="bar" x="398.6" y="238.6" width="4.1" height="9.4"/>
+<rect class="bar" x="405.4" y="242.2" width="4.1" height="5.8"/>
+<rect class="bar" x="412.3" y="241.4" width="4.1" height="6.6"/>
+<rect class="bar" x="419.2" y="240.2" width="4.1" height="7.8"/>
+<rect class="bar" x="426.1" y="235.9" width="4.1" height="12.1"/>
+<rect class="bar" x="432.9" y="241.2" width="4.1" height="6.8"/>
+<rect class="bar" x="439.8" y="239.3" width="4.1" height="8.7"/>
+<rect class="bar" x="446.7" y="240.2" width="4.1" height="7.8"/>
+<rect class="bar" x="453.6" y="241.3" width="4.1" height="6.7"/>
+<rect class="bar" x="460.4" y="233.3" width="4.1" height="14.7"/>
+<rect class="bar" x="467.3" y="241.1" width="4.1" height="6.9"/>
+<rect class="bar" x="474.2" y="232.0" width="4.1" height="16.0"/>
+<rect class="bar" x="481.1" y="235.0" width="4.1" height="13.0"/>
+<rect class="bar" x="487.9" y="220.1" width="4.1" height="27.9"/>
+<line class="axis" x1="50" x2="490" y1="248" y2="248"/>
+<text class="tick" x="44" y="195.5" text-anchor="end">2,000만</text>
+<text class="tick" x="44" y="251.5" text-anchor="end">0</text>
+<path class="ln-vma" d="M180.6,223.9 L187.5,223.9 L194.4,224.6 L201.2,225.6 L208.1,226.5 L215.0,227.1 L221.9,228.8 L228.8,229.8 L235.6,231.0 L242.5,231.8 L249.4,232.3 L256.2,232.1 L263.1,232.2 L270.0,233.0 L276.9,233.5 L283.8,233.8 L290.6,234.2 L297.5,235.0 L304.4,235.1 L311.2,235.7 L318.1,236.4 L325.0,236.9 L331.9,236.9 L338.8,237.1 L345.6,237.3 L352.5,237.3 L359.4,237.1 L366.2,236.2 L373.1,236.1 L380.0,236.3 L386.9,236.4 L393.8,236.9 L400.6,237.0 L407.5,237.4 L414.4,237.9 L421.2,238.0 L428.1,238.1 L435.0,238.6 L441.9,238.8 L448.8,238.8 L455.6,238.7 L462.5,238.2 L469.4,238.2 L476.2,237.7 L483.1,237.4 L490.0,236.3"/>
+<circle class="dot-vma" cx="476.2" cy="237.7" r="4.5"/>
+<text class="tick" x="50.0" y="262" text-anchor="start">08-21</text>
+<text class="tick" x="270.0" y="262" text-anchor="middle">10-12</text>
+<text class="tick" x="490.0" y="262" text-anchor="end">11-25</text>
+<line class="cross" x1="0" x2="0" y1="20" y2="248" visibility="hidden"/>
+<rect class="hit" x="50" y="20" width="440" height="228" data-l="50" data-xw="6.8750" data-n="65"/>
+</svg>
+</section>
+<section class='panel card' id='card-1'><h3>KODEX 코스닥150롱코스피200숏선물</h3><p class='sub'>주식 ETF · 360150 · 종가 3,520 · 평균 거래대금 1.1억</p><div class='stats'><div>하락 기간<b>16일</b></div><div>하락 폭<b>-5.43%</b></div><div>반등 폭<b>+0.68%</b></div><div>기울기 개선<b>1.087%p</b></div><div>거래량/평균<b>1.49배</b></div></div>
+<svg viewBox="0 0 500 268" class="chart" data-uid="1" role="img" aria-label="KODEX 코스닥150롱코스피200숏선물 종가와 MA20, 거래량과 VMA20">
+<rect class="fall" x="359.4" y="20" width="110.0" height="150"/>
+<text class="note" x="363.4" y="32">MA20 하락 구간</text>
+<line class="grid" x1="50" x2="490" y1="170.0" y2="170.0"/>
+<text class="tick" x="44" y="173.5" text-anchor="end">2,800</text>
+<line class="grid" x1="50" x2="490" y1="140.0" y2="140.0"/>
+<text class="tick" x="44" y="143.5" text-anchor="end">3,000</text>
+<line class="grid" x1="50" x2="490" y1="110.0" y2="110.0"/>
+<text class="tick" x="44" y="113.5" text-anchor="end">3,200</text>
+<line class="grid" x1="50" x2="490" y1="80.0" y2="80.0"/>
+<text class="tick" x="44" y="83.5" text-anchor="end">3,400</text>
+<line class="grid" x1="50" x2="490" y1="50.0" y2="50.0"/>
+<text class="tick" x="44" y="53.5" text-anchor="end">3,600</text>
+<line class="grid" x1="50" x2="490" y1="20.0" y2="20.0"/>
+<text class="tick" x="44" y="23.5" text-anchor="end">3,800</text>
+<path class="ln-close" d="M50.0,137.0 L56.9,111.5 L63.8,107.8 L70.6,116.0 L77.5,113.0 L84.4,104.8 L91.2,109.2 L98.1,125.8 L105.0,117.5 L111.9,129.5 L118.8,121.2 L125.6,138.5 L132.5,146.0 L139.4,138.5 L146.2,131.0 L153.1,136.2 L160.0,128.8 L166.9,118.2 L173.8,127.2 L180.6,125.8 L187.5,136.2 L194.4,138.5 L201.2,143.0 L208.1,142.2 L215.0,127.2 L221.9,122.8 L228.8,116.0 L235.6,98.8 L242.5,103.2 L249.4,76.2 L256.2,82.2 L263.1,74.8 L270.0,81.5 L276.9,56.8 L283.8,66.5 L290.6,67.2 L297.5,50.8 L304.4,45.5 L311.2,48.5 L318.1,58.2 L325.0,65.8 L331.9,79.2 L338.8,90.5 L345.6,96.5 L352.5,108.5 L359.4,116.8 L366.2,119.0 L373.1,118.2 L380.0,124.2 L386.9,120.5 L393.8,119.8 L400.6,112.2 L407.5,122.8 L414.4,117.5 L421.2,95.0 L428.1,102.5 L435.0,95.8 L441.9,102.5 L448.8,99.5 L455.6,100.2 L462.5,85.3 L469.4,90.5 L476.2,80.8 L483.1,87.5 L490.0,62.0"/>
+<path class="ln-ma" d="M180.6,124.2 L187.5,124.1 L194.4,125.5 L201.2,127.2 L208.1,128.6 L215.0,129.3 L221.9,130.2 L228.8,130.5 L235.6,129.2 L242.5,128.4 L249.4,125.8 L256.2,123.8 L263.1,120.7 L270.0,117.4 L276.9,113.3 L283.8,110.1 L290.6,106.7 L297.5,102.8 L304.4,99.1 L311.2,95.2 L318.1,91.8 L325.0,88.3 L331.9,85.3 L338.8,82.7 L345.6,80.4 L352.5,79.5 L359.4,79.2 L366.2,79.3 L373.1,80.3 L380.0,81.4 L386.9,83.6 L393.8,85.4 L400.6,87.3 L407.5,89.4 L414.4,92.4 L421.2,93.8 L428.1,95.6 L435.0,97.9 L441.9,100.7 L448.8,103.2 L455.6,105.3 L462.5,106.3 L469.4,106.9 L476.2,106.4 L483.1,106.0 L490.0,103.6"/>
+<circle class="dot-ma" cx="476.2" cy="106.4" r="5"/>
+<text class="lbl" x="468.2" y="122.4" text-anchor="end">전환 11-23</text>
+<rect class="bar" x="47.9" y="218.3" width="4.1" height="29.7"/>
+<rect class="bar" x="54.8" y="226.6" width="4.1" height="21.4"/>
+<rect class="bar" x="61.7" y="227.6" width="4.1" height="20.4"/>
+<rect class="bar" x="68.6" y="229.9" width="4.1" height="18.1"/>
+<rect class="bar" x="75.4" y="243.3" width="4.1" height="4.7"/>
+<rect class="bar" x="82.3" y="241.8" width="4.1" height="6.2"/>
+<rect class="bar" x="89.2" y="244.1" width="4.1" height="3.9"/>
+<rect class="bar" x="96.1" y="232.2" width="4.1" height="15.8"/>
+<rect class="bar" x="102.9" y="240.4" width="4.1" height="7.6"/>
+<rect class="bar" x="109.8" y="237.4" width="4.1" height="10.6"/>
+<rect class="bar" x="116.7" y="241.1" width="4.1" height="6.9"/>
+<rect class="bar" x="123.6" y="220.0" width="4.1" height="28.0"/>
+<rect class="bar" x="130.4" y="232.5" width="4.1" height="15.5"/>
+<rect class="bar" x="137.3" y="236.5" width="4.1" height="11.5"/>
+<rect class="bar" x="144.2" y="246.5" width="4.1" height="1.5"/>
+<rect class="bar" x="151.1" y="245.4" width="4.1" height="2.6"/>
+<rect class="bar" x="157.9" y="244.7" width="4.1" height="3.3"/>
+<rect class="bar" x="164.8" y="244.3" width="4.1" height="3.7"/>
+<rect class="bar" x="171.7" y="244.4" width="4.1" height="3.6"/>
+<rect class="bar" x="178.6" y="245.9" width="4.1" height="2.1"/>
+<rect class="bar" x="185.4" y="243.1" width="4.1" height="4.9"/>
+<rect class="bar" x="192.3" y="244.5" width="4.1" height="3.5"/>
+<rect class="bar" x="199.2" y="243.5" width="4.1" height="4.5"/>
+<rect class="bar" x="206.1" y="238.2" width="4.1" height="9.8"/>
+<rect class="bar" x="212.9" y="241.3" width="4.1" height="6.7"/>
+<rect class="bar" x="219.8" y="237.8" width="4.1" height="10.2"/>
+<rect class="bar" x="226.7" y="245.3" width="4.1" height="2.7"/>
+<rect class="bar" x="233.6" y="241.6" width="4.1" height="6.4"/>
+<rect class="bar" x="240.4" y="240.6" width="4.1" height="7.4"/>
+<rect class="bar" x="247.3" y="237.0" width="4.1" height="11.0"/>
+<rect class="bar" x="254.2" y="242.5" width="4.1" height="5.5"/>
+<rect class="bar" x="261.1" y="247.1" width="4.1" height="0.9"/>
+<rect class="bar" x="267.9" y="241.6" width="4.1" height="6.4"/>
+<rect class="bar" x="274.8" y="232.1" width="4.1" height="15.9"/>
+<rect class="bar" x="281.7" y="239.7" width="4.1" height="8.3"/>
+<rect class="bar" x="288.6" y="241.5" width="4.1" height="6.5"/>
+<rect class="bar" x="295.4" y="232.6" width="4.1" height="15.4"/>
+<rect class="bar" x="302.3" y="237.1" width="4.1" height="10.9"/>
+<rect class="bar" x="309.2" y="238.9" width="4.1" height="9.1"/>
+<rect class="bar" x="316.1" y="238.9" width="4.1" height="9.1"/>
+<rect class="bar" x="322.9" y="246.6" width="4.1" height="1.4"/>
+<rect class="bar" x="329.8" y="234.9" width="4.1" height="13.1"/>
+<rect class="bar" x="336.7" y="241.8" width="4.1" height="6.2"/>
+<rect class="bar" x="343.6" y="246.7" width="4.1" height="1.3"/>
+<rect class="bar" x="350.4" y="243.9" width="4.1" height="4.1"/>
+<rect class="bar" x="357.3" y="243.0" width="4.1" height="5.0"/>
+<rect class="bar" x="364.2" y="239.6" width="4.1" height="8.4"/>
+<rect class="bar" x="371.1" y="245.4" width="4.1" height="2.6"/>
+<rect class="bar" x="377.9" y="244.2" width="4.1" height="3.8"/>
+<rect class="bar" x="384.8" y="242.0" width="4.1" height="6.0"/>
+<rect class="bar" x="391.7" y="245.3" width="4.1" height="2.7"/>
+<rect class="bar" x="398.6" y="243.4" width="4.1" height="4.6"/>
+<rect class="bar" x="405.4" y="238.0" width="4.1" height="10.0"/>
+<rect class="bar" x="412.3" y="245.7" width="4.1" height="2.3"/>
+<rect class="bar" x="419.2" y="241.7" width="4.1" height="6.3"/>
+<rect class="bar" x="426.1" y="246.5" width="4.1" height="1.5"/>
+<rect class="bar" x="432.9" y="243.8" width="4.1" height="4.2"/>
+<rect class="bar" x="439.8" y="242.3" width="4.1" height="5.7"/>
+<rect class="bar" x="446.7" y="232.1" width="4.1" height="15.9"/>
+<rect class="bar" x="453.6" y="247.8" width="4.1" height="0.5"/>
+<rect class="bar" x="460.4" y="247.5" width="4.1" height="0.5"/>
+<rect class="bar" x="467.3" y="245.2" width="4.1" height="2.8"/>
+<rect class="bar" x="474.2" y="244.2" width="4.1" height="3.8"/>
+<rect class="bar" x="481.1" y="245.4" width="4.1" height="2.6"/>
+<rect class="bar" x="487.9" y="240.8" width="4.1" height="7.2"/>
+<line class="axis" x1="50" x2="490" y1="248" y2="248"/>
+<text class="tick" x="44" y="195.5" text-anchor="end">40만</text>
+<text class="tick" x="44" y="251.5" text-anchor="end">0</text>
+<path class="ln-vma" d="M180.6,237.1 L187.5,238.4 L194.4,239.3 L201.2,240.1 L208.1,240.5 L215.0,240.4 L221.9,240.2 L228.8,240.3 L235.6,240.7 L242.5,240.7 L249.4,240.7 L256.2,240.8 L263.1,242.1 L270.0,242.6 L276.9,242.4 L283.8,242.0 L290.6,241.8 L297.5,241.2 L304.4,240.9 L311.2,240.6 L318.1,240.3 L325.0,240.4 L331.9,239.9 L338.8,239.9 L345.6,240.3 L352.5,240.4 L359.4,240.7 L366.2,240.4 L373.1,240.6 L380.0,240.8 L386.9,241.0 L393.8,241.2 L400.6,241.0 L407.5,240.8 L414.4,241.5 L421.2,241.6 L428.1,241.8 L435.0,242.4 L441.9,242.6 L448.8,242.3 L455.6,242.7 L462.5,242.8 L469.4,243.3 L476.2,243.4 L483.1,243.4 L490.0,243.2"/>
+<circle class="dot-vma" cx="483.1" cy="243.4" r="4.5"/>
+<text class="tick" x="50.0" y="262" text-anchor="start">08-21</text>
+<text class="tick" x="270.0" y="262" text-anchor="middle">10-12</text>
+<text class="tick" x="490.0" y="262" text-anchor="end">11-25</text>
+<line class="cross" x1="0" x2="0" y1="20" y2="248" visibility="hidden"/>
+<rect class="hit" x="50" y="20" width="440" height="228" data-l="50" data-xw="6.8750" data-n="65"/>
+</svg>
+</section>
+<section class='panel card' id='card-2'><h3>KoAct 바이오헬스케어액티브</h3><p class='sub'>주식 ETF · 462900 · 종가 11,150 · 평균 거래대금 62.2억</p><div class='stats'><div>하락 기간<b>8일</b></div><div>하락 폭<b>-2.89%</b></div><div>반등 폭<b>+0.02%</b></div><div>기울기 개선<b>0.638%p</b></div><div>거래량/평균<b>1.61배</b></div></div>
+<svg viewBox="0 0 500 268" class="chart" data-uid="2" role="img" aria-label="KoAct 바이오헬스케어액티브 종가와 MA20, 거래량과 VMA20">
+<rect class="fall" x="428.1" y="20" width="55.0" height="150"/>
+<text class="note" x="432.1" y="32">MA20 하락 구간</text>
+<line class="grid" x1="50" x2="490" y1="170.0" y2="170.0"/>
+<text class="tick" x="44" y="173.5" text-anchor="end">10,000</text>
+<line class="grid" x1="50" x2="490" y1="120.0" y2="120.0"/>
+<text class="tick" x="44" y="123.5" text-anchor="end">12,000</text>
+<line class="grid" x1="50" x2="490" y1="70.0" y2="70.0"/>
+<text class="tick" x="44" y="73.5" text-anchor="end">14,000</text>
+<line class="grid" x1="50" x2="490" y1="20.0" y2="20.0"/>
+<text class="tick" x="44" y="23.5" text-anchor="end">16,000</text>
+<path class="ln-close" d="M50.0,67.2 L56.9,49.2 L63.8,57.5 L70.6,54.6 L77.5,51.4 L84.4,49.5 L91.2,61.6 L98.1,66.2 L105.0,76.8 L111.9,86.1 L118.8,77.5 L125.6,79.5 L132.5,87.6 L139.4,84.4 L146.2,88.8 L153.1,93.8 L160.0,99.1 L166.9,97.5 L173.8,99.5 L180.6,96.4 L187.5,102.0 L194.4,103.1 L201.2,109.0 L208.1,106.8 L215.0,107.0 L221.9,109.0 L228.8,108.9 L235.6,87.5 L242.5,97.5 L249.4,87.4 L256.2,89.8 L263.1,106.4 L270.0,121.4 L276.9,136.0 L283.8,138.0 L290.6,147.9 L297.5,132.0 L304.4,120.0 L311.2,128.2 L318.1,119.0 L325.0,126.4 L331.9,130.0 L338.8,141.2 L345.6,146.5 L352.5,142.1 L359.4,146.9 L366.2,151.8 L373.1,148.0 L380.0,152.6 L386.9,151.6 L393.8,140.6 L400.6,157.0 L407.5,158.9 L414.4,144.4 L421.2,132.4 L428.1,141.1 L435.0,143.6 L441.9,151.5 L448.8,150.5 L455.6,153.4 L462.5,144.9 L469.4,150.6 L476.2,157.8 L483.1,152.6 L490.0,141.2"/>
+<path class="ln-ma" d="M180.6,76.2 L187.5,78.0 L194.4,80.6 L201.2,83.2 L208.1,85.8 L215.0,88.6 L221.9,91.6 L228.8,93.9 L235.6,95.0 L242.5,96.0 L249.4,96.1 L256.2,96.7 L263.1,98.1 L270.0,99.8 L276.9,102.3 L283.8,104.8 L290.6,107.5 L297.5,109.1 L304.4,110.3 L311.2,111.7 L318.1,112.8 L325.0,114.1 L331.9,115.4 L338.8,117.0 L345.6,119.0 L352.5,120.8 L359.4,122.7 L366.2,124.8 L373.1,127.8 L380.0,130.6 L386.9,133.8 L393.8,136.3 L400.6,138.9 L407.5,140.7 L414.4,141.2 L421.2,140.9 L428.1,140.5 L435.0,141.1 L441.9,142.7 L448.8,143.8 L455.6,145.5 L462.5,146.4 L469.4,147.5 L476.2,148.3 L483.1,148.6 L490.0,148.6"/>
+<circle class="dot-ma" cx="490.0" cy="148.6" r="5"/>
+<text class="lbl" x="482.0" y="164.6" text-anchor="end">전환 11-25</text>
+<rect class="bar" x="47.9" y="223.1" width="4.1" height="24.9"/>
+<rect class="bar" x="54.8" y="212.9" width="4.1" height="35.1"/>
+<rect class="bar" x="61.7" y="221.3" width="4.1" height="26.7"/>
+<rect class="bar" x="68.6" y="202.0" width="4.1" height="46.0"/>
+<rect class="bar" x="75.4" y="228.0" width="4.1" height="20.0"/>
+<rect class="bar" x="82.3" y="218.1" width="4.1" height="29.9"/>
+<rect class="bar" x="89.2" y="217.3" width="4.1" height="30.7"/>
+<rect class="bar" x="96.1" y="236.1" width="4.1" height="11.9"/>
+<rect class="bar" x="102.9" y="225.4" width="4.1" height="22.6"/>
+<rect class="bar" x="109.8" y="227.7" width="4.1" height="20.3"/>
+<rect class="bar" x="116.7" y="233.9" width="4.1" height="14.1"/>
+<rect class="bar" x="123.6" y="235.4" width="4.1" height="12.6"/>
+<rect class="bar" x="130.4" y="227.0" width="4.1" height="21.0"/>
+<rect class="bar" x="137.3" y="225.5" width="4.1" height="22.5"/>
+<rect class="bar" x="144.2" y="232.3" width="4.1" height="15.7"/>
+<rect class="bar" x="151.1" y="235.5" width="4.1" height="12.5"/>
+<rect class="bar" x="157.9" y="231.1" width="4.1" height="16.9"/>
+<rect class="bar" x="164.8" y="218.1" width="4.1" height="29.9"/>
+<rect class="bar" x="171.7" y="231.4" width="4.1" height="16.6"/>
+<rect class="bar" x="178.6" y="230.2" width="4.1" height="17.8"/>
+<rect class="bar" x="185.4" y="232.7" width="4.1" height="15.3"/>
+<rect class="bar" x="192.3" y="234.3" width="4.1" height="13.7"/>
+<rect class="bar" x="199.2" y="230.9" width="4.1" height="17.1"/>
+<rect class="bar" x="206.1" y="230.6" width="4.1" height="17.4"/>
+<rect class="bar" x="212.9" y="234.5" width="4.1" height="13.5"/>
+<rect class="bar" x="219.8" y="231.5" width="4.1" height="16.5"/>
+<rect class="bar" x="226.7" y="233.0" width="4.1" height="15.0"/>
+<rect class="bar" x="233.6" y="203.8" width="4.1" height="44.2"/>
+<rect class="bar" x="240.4" y="225.1" width="4.1" height="22.9"/>
+<rect class="bar" x="247.3" y="211.0" width="4.1" height="37.0"/>
+<rect class="bar" x="254.2" y="223.1" width="4.1" height="24.9"/>
+<rect class="bar" x="261.1" y="212.0" width="4.1" height="36.0"/>
+<rect class="bar" x="267.9" y="229.3" width="4.1" height="18.7"/>
+<rect class="bar" x="274.8" y="207.2" width="4.1" height="40.8"/>
+<rect class="bar" x="281.7" y="218.6" width="4.1" height="29.4"/>
+<rect class="bar" x="288.6" y="203.9" width="4.1" height="44.1"/>
+<rect class="bar" x="295.4" y="197.3" width="4.1" height="50.7"/>
+<rect class="bar" x="302.3" y="208.4" width="4.1" height="39.6"/>
+<rect class="bar" x="309.2" y="227.4" width="4.1" height="20.6"/>
+<rect class="bar" x="316.1" y="224.1" width="4.1" height="23.9"/>
+<rect class="bar" x="322.9" y="237.6" width="4.1" height="10.4"/>
+<rect class="bar" x="329.8" y="236.0" width="4.1" height="12.0"/>
+<rect class="bar" x="336.7" y="237.3" width="4.1" height="10.7"/>
+<rect class="bar" x="343.6" y="230.9" width="4.1" height="17.1"/>
+<rect class="bar" x="350.4" y="226.6" width="4.1" height="21.4"/>
+<rect class="bar" x="357.3" y="229.0" width="4.1" height="19.0"/>
+<rect class="bar" x="364.2" y="229.7" width="4.1" height="18.3"/>
+<rect class="bar" x="371.1" y="235.9" width="4.1" height="12.1"/>
+<rect class="bar" x="377.9" y="240.6" width="4.1" height="7.4"/>
+<rect class="bar" x="384.8" y="227.0" width="4.1" height="21.0"/>
+<rect class="bar" x="391.7" y="204.8" width="4.1" height="43.2"/>
+<rect class="bar" x="398.6" y="226.2" width="4.1" height="21.8"/>
+<rect class="bar" x="405.4" y="223.6" width="4.1" height="24.4"/>
+<rect class="bar" x="412.3" y="236.8" width="4.1" height="11.2"/>
+<rect class="bar" x="419.2" y="230.8" width="4.1" height="17.2"/>
+<rect class="bar" x="426.1" y="235.8" width="4.1" height="12.2"/>
+<rect class="bar" x="432.9" y="231.2" width="4.1" height="16.8"/>
+<rect class="bar" x="439.8" y="238.5" width="4.1" height="9.5"/>
+<rect class="bar" x="446.7" y="238.5" width="4.1" height="9.5"/>
+<rect class="bar" x="453.6" y="238.7" width="4.1" height="9.3"/>
+<rect class="bar" x="460.4" y="241.5" width="4.1" height="6.5"/>
+<rect class="bar" x="467.3" y="238.3" width="4.1" height="9.7"/>
+<rect class="bar" x="474.2" y="238.9" width="4.1" height="9.1"/>
+<rect class="bar" x="481.1" y="233.4" width="4.1" height="14.6"/>
+<rect class="bar" x="487.9" y="222.3" width="4.1" height="25.7"/>
+<line class="axis" x1="50" x2="490" y1="248" y2="248"/>
+<text class="tick" x="44" y="195.5" text-anchor="end">200만</text>
+<text class="tick" x="44" y="251.5" text-anchor="end">0</text>
+<path class="ln-vma" d="M180.6,225.6 L187.5,226.1 L194.4,227.2 L201.2,227.6 L208.1,229.1 L215.0,229.4 L221.9,230.1 L228.8,230.9 L235.6,229.2 L242.5,229.2 L249.4,228.4 L256.2,227.8 L263.1,226.7 L270.0,226.8 L276.9,225.9 L283.8,225.2 L290.6,223.6 L297.5,221.9 L304.4,221.4 L311.2,221.2 L318.1,220.9 L325.0,221.2 L331.9,221.3 L338.8,221.6 L345.6,221.6 L352.5,221.2 L359.4,221.1 L366.2,220.9 L373.1,222.5 L380.0,223.3 L386.9,224.1 L393.8,223.2 L400.6,223.9 L407.5,223.6 L414.4,225.1 L421.2,225.7 L428.1,227.3 L435.0,229.0 L441.9,230.5 L448.8,231.0 L455.6,231.8 L462.5,232.0 L469.4,232.1 L476.2,232.2 L483.1,232.3 L490.0,232.1"/>
+<circle class="dot-vma" cx="490.0" cy="232.1" r="4.5"/>
+<text class="tick" x="50.0" y="262" text-anchor="start">08-21</text>
+<text class="tick" x="270.0" y="262" text-anchor="middle">10-12</text>
+<text class="tick" x="490.0" y="262" text-anchor="end">11-25</text>
+<line class="cross" x1="0" x2="0" y1="20" y2="248" visibility="hidden"/>
+<rect class="hit" x="50" y="20" width="440" height="228" data-l="50" data-xw="6.8750" data-n="65"/>
+</svg>
+</section>
+<section class='panel card' id='card-3'><h3>TIGER 기술이전바이오액티브</h3><p class='sub'>주식 ETF · 0168K0 · 종가 4,980 · 평균 거래대금 30.3억</p><div class='stats'><div>하락 기간<b>8일</b></div><div>하락 폭<b>-2.57%</b></div><div>반등 폭<b>+0.01%</b></div><div>기울기 개선<b>0.581%p</b></div><div>거래량/평균<b>1.9배</b></div></div>
+<svg viewBox="0 0 500 268" class="chart" data-uid="3" role="img" aria-label="TIGER 기술이전바이오액티브 종가와 MA20, 거래량과 VMA20">
+<rect class="fall" x="428.1" y="20" width="55.0" height="150"/>
+<text class="note" x="432.1" y="32">MA20 하락 구간</text>
+<line class="grid" x1="50" x2="490" y1="170.0" y2="170.0"/>
+<text class="tick" x="44" y="173.5" text-anchor="end">4,000</text>
+<line class="grid" x1="50" x2="490" y1="120.0" y2="120.0"/>
+<text class="tick" x="44" y="123.5" text-anchor="end">5,000</text>
+<line class="grid" x1="50" x2="490" y1="70.0" y2="70.0"/>
+<text class="tick" x="44" y="73.5" text-anchor="end">6,000</text>
+<line class="grid" x1="50" x2="490" y1="20.0" y2="20.0"/>
+<text class="tick" x="44" y="23.5" text-anchor="end">7,000</text>
+<path class="ln-close" d="M50.0,55.5 L56.9,40.0 L63.8,46.0 L70.6,44.0 L77.5,43.2 L84.4,41.8 L91.2,51.5 L98.1,57.8 L105.0,65.0 L111.9,77.0 L118.8,68.8 L125.6,70.2 L132.5,76.2 L139.4,75.5 L146.2,79.5 L153.1,84.5 L160.0,88.5 L166.9,86.5 L173.8,88.0 L180.6,82.5 L187.5,92.2 L194.4,94.8 L201.2,100.8 L208.1,96.5 L215.0,95.0 L221.9,97.8 L228.8,96.8 L235.6,78.2 L242.5,83.5 L249.4,76.8 L256.2,81.5 L263.1,93.5 L270.0,108.5 L276.9,121.0 L283.8,123.5 L290.6,135.0 L297.5,119.5 L304.4,108.8 L311.2,113.0 L318.1,105.8 L325.0,113.0 L331.9,110.8 L338.8,120.0 L345.6,125.2 L352.5,121.2 L359.4,124.5 L366.2,128.8 L373.1,127.0 L380.0,133.8 L386.9,134.0 L393.8,124.0 L400.6,136.2 L407.5,138.5 L414.4,124.8 L421.2,115.8 L428.1,122.5 L435.0,123.8 L441.9,133.0 L448.8,133.0 L455.6,134.0 L462.5,125.8 L469.4,131.0 L476.2,134.2 L483.1,128.8 L490.0,121.0"/>
+<path class="ln-ma" d="M180.6,66.1 L187.5,67.9 L194.4,70.7 L201.2,73.4 L208.1,76.0 L215.0,78.6 L221.9,81.4 L228.8,83.7 L235.6,84.7 L242.5,85.6 L249.4,85.6 L256.2,86.3 L263.1,87.4 L270.0,89.0 L276.9,91.3 L283.8,93.5 L290.6,96.0 L297.5,97.6 L304.4,98.7 L311.2,100.0 L318.1,101.1 L325.0,102.2 L331.9,103.0 L338.8,103.9 L345.6,105.3 L352.5,106.7 L359.4,108.0 L366.2,109.6 L373.1,112.0 L380.0,114.6 L386.9,117.4 L393.8,119.5 L400.6,121.7 L407.5,123.2 L414.4,123.4 L421.2,123.0 L428.1,122.3 L435.0,122.6 L441.9,123.8 L448.8,124.8 L455.6,126.2 L462.5,126.8 L469.4,127.8 L476.2,128.6 L483.1,128.7 L490.0,128.7"/>
+<circle class="dot-ma" cx="490.0" cy="128.7" r="5"/>
+<text class="lbl" x="482.0" y="144.7" text-anchor="end">전환 11-25</text>
+<rect class="bar" x="47.9" y="233.2" width="4.1" height="14.8"/>
+<rect class="bar" x="54.8" y="230.5" width="4.1" height="17.5"/>
+<rect class="bar" x="61.7" y="232.9" width="4.1" height="15.1"/>
+<rect class="bar" x="68.6" y="232.5" width="4.1" height="15.5"/>
+<rect class="bar" x="75.4" y="235.0" width="4.1" height="13.0"/>
+<rect class="bar" x="82.3" y="235.9" width="4.1" height="12.1"/>
+<rect class="bar" x="89.2" y="234.7" width="4.1" height="13.3"/>
+<rect class="bar" x="96.1" y="238.3" width="4.1" height="9.7"/>
+<rect class="bar" x="102.9" y="224.6" width="4.1" height="23.4"/>
+<rect class="bar" x="109.8" y="231.2" width="4.1" height="16.8"/>
+<rect class="bar" x="116.7" y="232.7" width="4.1" height="15.3"/>
+<rect class="bar" x="123.6" y="235.9" width="4.1" height="12.1"/>
+<rect class="bar" x="130.4" y="234.2" width="4.1" height="13.8"/>
+<rect class="bar" x="137.3" y="230.6" width="4.1" height="17.4"/>
+<rect class="bar" x="144.2" y="235.9" width="4.1" height="12.1"/>
+<rect class="bar" x="151.1" y="236.4" width="4.1" height="11.6"/>
+<rect class="bar" x="157.9" y="232.3" width="4.1" height="15.7"/>
+<rect class="bar" x="164.8" y="228.0" width="4.1" height="20.0"/>
+<rect class="bar" x="171.7" y="235.3" width="4.1" height="12.7"/>
+<rect class="bar" x="178.6" y="235.3" width="4.1" height="12.7"/>
+<rect class="bar" x="185.4" y="228.6" width="4.1" height="19.4"/>
+<rect class="bar" x="192.3" y="239.2" width="4.1" height="8.8"/>
+<rect class="bar" x="199.2" y="229.6" width="4.1" height="18.4"/>
+<rect class="bar" x="206.1" y="230.0" width="4.1" height="18.0"/>
+<rect class="bar" x="212.9" y="232.3" width="4.1" height="15.7"/>
+<rect class="bar" x="219.8" y="235.7" width="4.1" height="12.3"/>
+<rect class="bar" x="226.7" y="236.9" width="4.1" height="11.1"/>
+<rect class="bar" x="233.6" y="218.2" width="4.1" height="29.8"/>
+<rect class="bar" x="240.4" y="235.6" width="4.1" height="12.4"/>
+<rect class="bar" x="247.3" y="233.0" width="4.1" height="15.0"/>
+<rect class="bar" x="254.2" y="235.2" width="4.1" height="12.8"/>
+<rect class="bar" x="261.1" y="232.7" width="4.1" height="15.3"/>
+<rect class="bar" x="267.9" y="229.1" width="4.1" height="18.9"/>
+<rect class="bar" x="274.8" y="229.8" width="4.1" height="18.2"/>
+<rect class="bar" x="281.7" y="227.7" width="4.1" height="20.3"/>
+<rect class="bar" x="288.6" y="218.1" width="4.1" height="29.9"/>
+<rect class="bar" x="295.4" y="204.7" width="4.1" height="43.3"/>
+<rect class="bar" x="302.3" y="228.3" width="4.1" height="19.7"/>
+<rect class="bar" x="309.2" y="235.1" width="4.1" height="12.9"/>
+<rect class="bar" x="316.1" y="236.1" width="4.1" height="11.9"/>
+<rect class="bar" x="322.9" y="241.3" width="4.1" height="6.7"/>
+<rect class="bar" x="329.8" y="237.6" width="4.1" height="10.4"/>
+<rect class="bar" x="336.7" y="241.8" width="4.1" height="6.2"/>
+<rect class="bar" x="343.6" y="236.1" width="4.1" height="11.9"/>
+<rect class="bar" x="350.4" y="232.1" width="4.1" height="15.9"/>
+<rect class="bar" x="357.3" y="237.1" width="4.1" height="10.9"/>
+<rect class="bar" x="364.2" y="240.8" width="4.1" height="7.2"/>
+<rect class="bar" x="371.1" y="238.4" width="4.1" height="9.6"/>
+<rect class="bar" x="377.9" y="243.9" width="4.1" height="4.1"/>
+<rect class="bar" x="384.8" y="235.1" width="4.1" height="12.9"/>
+<rect class="bar" x="391.7" y="230.4" width="4.1" height="17.6"/>
+<rect class="bar" x="398.6" y="232.2" width="4.1" height="15.8"/>
+<rect class="bar" x="405.4" y="237.6" width="4.1" height="10.4"/>
+<rect class="bar" x="412.3" y="242.0" width="4.1" height="6.0"/>
+<rect class="bar" x="419.2" y="238.3" width="4.1" height="9.7"/>
+<rect class="bar" x="426.1" y="240.9" width="4.1" height="7.1"/>
+<rect class="bar" x="432.9" y="242.1" width="4.1" height="5.9"/>
+<rect class="bar" x="439.8" y="242.0" width="4.1" height="6.0"/>
+<rect class="bar" x="446.7" y="243.1" width="4.1" height="4.9"/>
+<rect class="bar" x="453.6" y="241.4" width="4.1" height="6.6"/>
+<rect class="bar" x="460.4" y="243.8" width="4.1" height="4.2"/>
+<rect class="bar" x="467.3" y="242.7" width="4.1" height="5.3"/>
+<rect class="bar" x="474.2" y="242.8" width="4.1" height="5.2"/>
+<rect class="bar" x="481.1" y="238.8" width="4.1" height="9.2"/>
+<rect class="bar" x="487.9" y="231.3" width="4.1" height="16.7"/>
+<line class="axis" x1="50" x2="490" y1="248" y2="248"/>
+<text class="tick" x="44" y="195.5" text-anchor="end">400만</text>
+<text class="tick" x="44" y="251.5" text-anchor="end">0</text>
+<path class="ln-vma" d="M180.6,233.3 L187.5,233.0 L194.4,233.5 L201.2,233.3 L208.1,233.2 L215.0,233.1 L221.9,233.0 L228.8,233.1 L235.6,232.1 L242.5,232.7 L249.4,232.8 L256.2,232.9 L263.1,232.8 L270.0,232.5 L276.9,232.5 L283.8,232.0 L290.6,231.1 L297.5,229.8 L304.4,229.8 L311.2,229.8 L318.1,229.8 L325.0,230.4 L331.9,230.4 L338.8,231.0 L345.6,231.3 L352.5,231.2 L359.4,231.3 L366.2,231.5 L373.1,232.5 L380.0,232.9 L386.9,233.0 L393.8,232.8 L400.6,232.8 L407.5,233.2 L414.4,233.8 L421.2,234.3 L428.1,235.5 L435.0,237.4 L441.9,238.0 L448.8,238.4 L455.6,238.7 L462.5,238.8 L469.4,239.1 L476.2,239.1 L483.1,239.3 L490.0,239.2"/>
+<circle class="dot-vma" cx="490.0" cy="239.2" r="4.5"/>
+<text class="tick" x="50.0" y="262" text-anchor="start">08-21</text>
+<text class="tick" x="270.0" y="262" text-anchor="middle">10-12</text>
+<text class="tick" x="490.0" y="262" text-anchor="end">11-25</text>
+<line class="cross" x1="0" x2="0" y1="20" y2="248" visibility="hidden"/>
+<rect class="hit" x="50" y="20" width="440" height="228" data-l="50" data-xw="6.8750" data-n="65"/>
+</svg>
+</section>
+<section class='panel card' id='card-4'><h3>RISE 내수주플러스</h3><p class='sub'>주식 ETF · 326230 · 종가 10,015 · 평균 거래대금 0.3억</p><div class='stats'><div>하락 기간<b>44+일</b></div><div>하락 폭<b>-13.09%</b></div><div>반등 폭<b>+0.03%</b></div><div>기울기 개선<b>0.553%p</b></div><div>거래량/평균<b>0.62배</b></div></div>
+<svg viewBox="0 0 500 268" class="chart" data-uid="4" role="img" aria-label="RISE 내수주플러스 종가와 MA20, 거래량과 VMA20">
+<rect class="fall" x="180.6" y="20" width="302.5" height="150"/>
+<text class="note" x="184.6" y="32">MA20 하락 구간</text>
+<line class="grid" x1="50" x2="490" y1="170.0" y2="170.0"/>
+<text class="tick" x="44" y="173.5" text-anchor="end">9,000</text>
+<line class="grid" x1="50" x2="490" y1="120.0" y2="120.0"/>
+<text class="tick" x="44" y="123.5" text-anchor="end">10,000</text>
+<line class="grid" x1="50" x2="490" y1="70.0" y2="70.0"/>
+<text class="tick" x="44" y="73.5" text-anchor="end">11,000</text>
+<line class="grid" x1="50" x2="490" y1="20.0" y2="20.0"/>
+<text class="tick" x="44" y="23.5" text-anchor="end">12,000</text>
+<path class="ln-close" d="M50.0,60.0 L56.9,43.8 L63.8,39.8 L70.6,32.5 L77.5,40.8 L84.4,32.0 L91.2,34.2 L98.1,40.2 L105.0,53.8 L111.9,57.0 L118.8,54.0 L125.6,55.0 L132.5,56.8 L139.4,63.8 L146.2,65.2 L153.1,68.5 L160.0,66.0 L166.9,70.5 L173.8,73.2 L180.6,69.0 L187.5,75.2 L194.4,77.2 L201.2,75.0 L208.1,79.8 L215.0,74.0 L221.9,78.5 L228.8,81.0 L235.6,81.0 L242.5,77.0 L249.4,72.3 L256.2,70.8 L263.1,84.8 L270.0,96.5 L276.9,109.2 L283.8,107.0 L290.6,111.2 L297.5,97.2 L304.4,91.0 L311.2,100.8 L318.1,101.2 L325.0,109.2 L331.9,118.8 L338.8,129.8 L345.6,132.2 L352.5,122.0 L359.4,129.5 L366.2,129.0 L373.1,123.2 L380.0,128.0 L386.9,126.0 L393.8,110.8 L400.6,115.5 L407.5,127.2 L414.4,126.0 L421.2,123.2 L428.1,136.0 L435.0,127.8 L441.9,128.8 L448.8,128.5 L455.6,130.2 L462.5,124.2 L469.4,136.0 L476.2,151.2 L483.1,135.5 L490.0,119.2"/>
+<path class="ln-ma" d="M180.6,53.8 L187.5,54.6 L194.4,56.2 L201.2,58.0 L208.1,60.4 L215.0,62.0 L221.9,64.3 L228.8,66.7 L235.6,68.7 L242.5,69.9 L249.4,70.7 L256.2,71.5 L263.1,73.0 L270.0,75.0 L276.9,77.2 L283.8,79.3 L290.6,81.5 L297.5,83.0 L304.4,84.1 L311.2,85.4 L318.1,87.0 L325.0,88.7 L331.9,90.8 L338.8,93.5 L345.6,96.2 L352.5,98.6 L359.4,101.1 L366.2,103.5 L373.1,105.6 L380.0,108.2 L386.9,110.9 L393.8,112.9 L400.6,114.4 L407.5,115.9 L414.4,116.8 L421.2,117.6 L428.1,118.8 L435.0,120.4 L441.9,122.2 L448.8,123.6 L455.6,125.1 L462.5,125.8 L469.4,126.7 L476.2,127.8 L483.1,127.9 L490.0,127.8"/>
+<circle class="dot-ma" cx="490.0" cy="127.8" r="5"/>
+<text class="lbl" x="482.0" y="143.8" text-anchor="end">전환 11-25</text>
+<rect class="bar" x="47.9" y="247.8" width="4.1" height="0.5"/>
+<rect class="bar" x="54.8" y="246.6" width="4.1" height="1.4"/>
+<rect class="bar" x="61.7" y="246.1" width="4.1" height="1.9"/>
+<rect class="bar" x="68.6" y="248.0" width="4.1" height="0.5"/>
+<rect class="bar" x="75.4" y="247.9" width="4.1" height="0.5"/>
+<rect class="bar" x="82.3" y="248.0" width="4.1" height="0.5"/>
+<rect class="bar" x="89.2" y="246.6" width="4.1" height="1.4"/>
+<rect class="bar" x="96.1" y="247.9" width="4.1" height="0.5"/>
+<rect class="bar" x="102.9" y="247.9" width="4.1" height="0.5"/>
+<rect class="bar" x="109.8" y="247.9" width="4.1" height="0.5"/>
+<rect class="bar" x="116.7" y="243.1" width="4.1" height="4.9"/>
+<rect class="bar" x="123.6" y="247.9" width="4.1" height="0.5"/>
+<rect class="bar" x="130.4" y="247.9" width="4.1" height="0.5"/>
+<rect class="bar" x="137.3" y="247.6" width="4.1" height="0.5"/>
+<rect class="bar" x="144.2" y="247.8" width="4.1" height="0.5"/>
+<rect class="bar" x="151.1" y="235.5" width="4.1" height="12.5"/>
+<rect class="bar" x="157.9" y="247.8" width="4.1" height="0.5"/>
+<rect class="bar" x="164.8" y="247.9" width="4.1" height="0.5"/>
+<rect class="bar" x="171.7" y="247.9" width="4.1" height="0.5"/>
+<rect class="bar" x="178.6" y="247.6" width="4.1" height="0.5"/>
+<rect class="bar" x="185.4" y="247.7" width="4.1" height="0.5"/>
+<rect class="bar" x="192.3" y="247.7" width="4.1" height="0.5"/>
+<rect class="bar" x="199.2" y="247.9" width="4.1" height="0.5"/>
+<rect class="bar" x="206.1" y="247.6" width="4.1" height="0.5"/>
+<rect class="bar" x="212.9" y="247.8" width="4.1" height="0.5"/>
+<rect class="bar" x="219.8" y="244.0" width="4.1" height="4.0"/>
+<rect class="bar" x="226.7" y="247.3" width="4.1" height="0.7"/>
+<rect class="bar" x="233.6" y="247.9" width="4.1" height="0.5"/>
+<rect class="bar" x="240.4" y="247.9" width="4.1" height="0.5"/>
+<rect class="bar" x="247.3" y="247.4" width="4.1" height="0.6"/>
+<rect class="bar" x="254.2" y="247.9" width="4.1" height="0.5"/>
+<rect class="bar" x="261.1" y="247.9" width="4.1" height="0.5"/>
+<rect class="bar" x="267.9" y="241.4" width="4.1" height="6.6"/>
+<rect class="bar" x="274.8" y="233.8" width="4.1" height="14.2"/>
+<rect class="bar" x="281.7" y="247.5" width="4.1" height="0.5"/>
+<rect class="bar" x="288.6" y="247.6" width="4.1" height="0.5"/>
+<rect class="bar" x="295.4" y="232.3" width="4.1" height="15.7"/>
+<rect class="bar" x="302.3" y="248.0" width="4.1" height="0.5"/>
+<rect class="bar" x="309.2" y="247.9" width="4.1" height="0.5"/>
+<rect class="bar" x="316.1" y="247.7" width="4.1" height="0.5"/>
+<rect class="bar" x="322.9" y="248.0" width="4.1" height="0.5"/>
+<rect class="bar" x="329.8" y="243.3" width="4.1" height="4.7"/>
+<rect class="bar" x="336.7" y="247.6" width="4.1" height="0.5"/>
+<rect class="bar" x="343.6" y="247.7" width="4.1" height="0.5"/>
+<rect class="bar" x="350.4" y="247.9" width="4.1" height="0.5"/>
+<rect class="bar" x="357.3" y="247.9" width="4.1" height="0.5"/>
+<rect class="bar" x="364.2" y="234.7" width="4.1" height="13.3"/>
+<rect class="bar" x="371.1" y="220.7" width="4.1" height="27.3"/>
+<rect class="bar" x="377.9" y="224.6" width="4.1" height="23.4"/>
+<rect class="bar" x="384.8" y="248.0" width="4.1" height="0.5"/>
+<rect class="bar" x="391.7" y="217.2" width="4.1" height="30.8"/>
+<rect class="bar" x="398.6" y="247.9" width="4.1" height="0.5"/>
+<rect class="bar" x="405.4" y="226.5" width="4.1" height="21.5"/>
+<rect class="bar" x="412.3" y="247.8" width="4.1" height="0.5"/>
+<rect class="bar" x="419.2" y="245.2" width="4.1" height="2.8"/>
+<rect class="bar" x="426.1" y="247.9" width="4.1" height="0.5"/>
+<rect class="bar" x="432.9" y="248.0" width="4.1" height="0.5"/>
+<rect class="bar" x="439.8" y="247.8" width="4.1" height="0.5"/>
+<rect class="bar" x="446.7" y="245.2" width="4.1" height="2.8"/>
+<rect class="bar" x="453.6" y="227.9" width="4.1" height="20.1"/>
+<rect class="bar" x="460.4" y="242.6" width="4.1" height="5.4"/>
+<rect class="bar" x="467.3" y="248.0" width="4.1" height="0.5"/>
+<rect class="bar" x="474.2" y="247.7" width="4.1" height="0.5"/>
+<rect class="bar" x="481.1" y="248.0" width="4.1" height="0.5"/>
+<rect class="bar" x="487.9" y="243.3" width="4.1" height="4.7"/>
+<line class="axis" x1="50" x2="490" y1="248" y2="248"/>
+<text class="tick" x="44" y="195.5" text-anchor="end">2만</text>
+<text class="tick" x="44" y="251.5" text-anchor="end">0</text>
+<path class="ln-vma" d="M180.6,246.8 L187.5,246.8 L194.4,246.8 L201.2,246.9 L208.1,246.9 L215.0,246.9 L221.9,246.7 L228.8,246.7 L235.6,246.7 L242.5,246.7 L249.4,246.7 L256.2,247.0 L263.1,247.0 L270.0,246.6 L276.9,245.9 L283.8,245.9 L290.6,246.5 L297.5,245.8 L304.4,245.8 L311.2,245.8 L318.1,245.8 L325.0,245.8 L331.9,245.6 L338.8,245.5 L345.6,245.5 L352.5,245.6 L359.4,245.7 L366.2,245.1 L373.1,243.8 L380.0,242.6 L386.9,242.6 L393.8,241.1 L400.6,241.1 L407.5,240.3 L414.4,241.0 L421.2,240.9 L428.1,240.9 L435.0,241.7 L441.9,241.7 L448.8,241.6 L455.6,240.6 L462.5,240.3 L469.4,240.6 L476.2,240.6 L483.1,240.6 L490.0,240.3"/>
+<circle class="dot-vma" cx="490.0" cy="240.3" r="4.5"/>
+<text class="tick" x="50.0" y="262" text-anchor="start">08-21</text>
+<text class="tick" x="270.0" y="262" text-anchor="middle">10-12</text>
+<text class="tick" x="490.0" y="262" text-anchor="end">11-25</text>
+<line class="cross" x1="0" x2="0" y1="20" y2="248" visibility="hidden"/>
+<rect class="hit" x="50" y="20" width="440" height="228" data-l="50" data-xw="6.8750" data-n="65"/>
+</svg>
+</section>
+<section class='panel card' id='card-5'><h3>TIGER 200 생활소비재</h3><p class='sub'>주식 ETF · 227560 · 종가 11,825 · 평균 거래대금 0.4억</p><div class='stats'><div>하락 기간<b>44+일</b></div><div>하락 폭<b>-11.39%</b></div><div>반등 폭<b>+0.04%</b></div><div>기울기 개선<b>0.552%p</b></div><div>거래량/평균<b>0.95배</b></div></div>
+<svg viewBox="0 0 500 268" class="chart" data-uid="5" role="img" aria-label="TIGER 200 생활소비재 종가와 MA20, 거래량과 VMA20">
+<rect class="fall" x="180.6" y="20" width="302.5" height="150"/>
+<text class="note" x="184.6" y="32">MA20 하락 구간</text>
+<line class="grid" x1="50" x2="490" y1="170.0" y2="170.0"/>
+<text class="tick" x="44" y="173.5" text-anchor="end">10,000</text>
+<line class="grid" x1="50" x2="490" y1="132.5" y2="132.5"/>
+<text class="tick" x="44" y="136.0" text-anchor="end">11,000</text>
+<line class="grid" x1="50" x2="490" y1="95.0" y2="95.0"/>
+<text class="tick" x="44" y="98.5" text-anchor="end">12,000</text>
+<line class="grid" x1="50" x2="490" y1="57.5" y2="57.5"/>
+<text class="tick" x="44" y="61.0" text-anchor="end">13,000</text>
+<line class="grid" x1="50" x2="490" y1="20.0" y2="20.0"/>
+<text class="tick" x="44" y="23.5" text-anchor="end">14,000</text>
+<path class="ln-close" d="M50.0,66.1 L56.9,55.1 L63.8,41.0 L70.6,32.6 L77.5,45.3 L84.4,29.4 L91.2,33.9 L98.1,42.1 L105.0,52.2 L111.9,54.1 L118.8,60.5 L125.6,66.1 L132.5,66.7 L139.4,72.3 L146.2,76.4 L153.1,71.2 L160.0,69.7 L166.9,76.2 L173.8,80.0 L180.6,75.1 L187.5,74.4 L194.4,77.2 L201.2,75.5 L208.1,78.3 L215.0,77.6 L221.9,78.1 L228.8,83.0 L235.6,83.9 L242.5,85.3 L249.4,84.9 L256.2,78.1 L263.1,85.1 L270.0,88.4 L276.9,103.8 L283.8,102.3 L290.6,103.4 L297.5,85.4 L304.4,80.8 L311.2,89.0 L318.1,86.4 L325.0,93.5 L331.9,99.5 L338.8,109.6 L345.6,113.8 L352.5,104.8 L359.4,108.9 L366.2,107.9 L373.1,102.9 L380.0,104.8 L386.9,104.8 L393.8,89.4 L400.6,103.1 L407.5,115.6 L414.4,117.5 L421.2,119.0 L428.1,118.4 L435.0,128.2 L441.9,121.6 L448.8,125.4 L455.6,123.1 L462.5,117.1 L469.4,121.4 L476.2,125.2 L483.1,115.4 L490.0,101.6"/>
+<path class="ln-ma" d="M180.6,58.3 L187.5,58.7 L194.4,59.8 L201.2,61.5 L208.1,63.8 L215.0,65.5 L221.9,67.9 L228.8,70.3 L235.6,72.4 L242.5,74.1 L249.4,75.6 L256.2,76.5 L263.1,77.5 L270.0,78.5 L276.9,80.1 L283.8,81.4 L290.6,83.0 L297.5,83.8 L304.4,84.0 L311.2,84.5 L318.1,85.0 L325.0,86.0 L331.9,87.1 L338.8,88.8 L345.6,90.6 L352.5,92.0 L359.4,93.5 L366.2,94.7 L373.1,95.7 L380.0,96.7 L386.9,97.7 L393.8,98.2 L400.6,99.1 L407.5,100.5 L414.4,101.2 L421.2,102.0 L428.1,102.7 L435.0,104.9 L441.9,106.9 L448.8,108.7 L455.6,110.6 L462.5,111.8 L469.4,112.9 L476.2,113.6 L483.1,113.7 L490.0,113.6"/>
+<circle class="dot-ma" cx="490.0" cy="113.6" r="5"/>
+<text class="lbl" x="482.0" y="129.6" text-anchor="end">전환 11-25</text>
+<rect class="bar" x="47.9" y="245.9" width="4.1" height="2.1"/>
+<rect class="bar" x="54.8" y="241.8" width="4.1" height="6.2"/>
+<rect class="bar" x="61.7" y="243.2" width="4.1" height="4.8"/>
+<rect class="bar" x="68.6" y="226.6" width="4.1" height="21.4"/>
+<rect class="bar" x="75.4" y="225.0" width="4.1" height="23.0"/>
+<rect class="bar" x="82.3" y="230.6" width="4.1" height="17.4"/>
+<rect class="bar" x="89.2" y="230.5" width="4.1" height="17.5"/>
+<rect class="bar" x="96.1" y="223.5" width="4.1" height="24.5"/>
+<rect class="bar" x="102.9" y="237.2" width="4.1" height="10.8"/>
+<rect class="bar" x="109.8" y="244.9" width="4.1" height="3.1"/>
+<rect class="bar" x="116.7" y="218.6" width="4.1" height="29.4"/>
+<rect class="bar" x="123.6" y="239.8" width="4.1" height="8.2"/>
+<rect class="bar" x="130.4" y="242.2" width="4.1" height="5.8"/>
+<rect class="bar" x="137.3" y="229.9" width="4.1" height="18.1"/>
+<rect class="bar" x="144.2" y="245.9" width="4.1" height="2.1"/>
+<rect class="bar" x="151.1" y="228.5" width="4.1" height="19.5"/>
+<rect class="bar" x="157.9" y="246.8" width="4.1" height="1.2"/>
+<rect class="bar" x="164.8" y="247.7" width="4.1" height="0.5"/>
+<rect class="bar" x="171.7" y="247.6" width="4.1" height="0.5"/>
+<rect class="bar" x="178.6" y="247.5" width="4.1" height="0.5"/>
+<rect class="bar" x="185.4" y="193.3" width="4.1" height="54.7"/>
+<rect class="bar" x="192.3" y="246.6" width="4.1" height="1.4"/>
+<rect class="bar" x="199.2" y="207.1" width="4.1" height="40.9"/>
+<rect class="bar" x="206.1" y="220.3" width="4.1" height="27.7"/>
+<rect class="bar" x="212.9" y="247.3" width="4.1" height="0.7"/>
+<rect class="bar" x="219.8" y="247.3" width="4.1" height="0.7"/>
+<rect class="bar" x="226.7" y="247.6" width="4.1" height="0.5"/>
+<rect class="bar" x="233.6" y="240.1" width="4.1" height="7.9"/>
+<rect class="bar" x="240.4" y="245.0" width="4.1" height="3.0"/>
+<rect class="bar" x="247.3" y="233.9" width="4.1" height="14.1"/>
+<rect class="bar" x="254.2" y="246.8" width="4.1" height="1.2"/>
+<rect class="bar" x="261.1" y="246.5" width="4.1" height="1.5"/>
+<rect class="bar" x="267.9" y="233.9" width="4.1" height="14.1"/>
+<rect class="bar" x="274.8" y="231.2" width="4.1" height="16.8"/>
+<rect class="bar" x="281.7" y="247.3" width="4.1" height="0.7"/>
+<rect class="bar" x="288.6" y="244.0" width="4.1" height="4.0"/>
+<rect class="bar" x="295.4" y="238.7" width="4.1" height="9.3"/>
+<rect class="bar" x="302.3" y="245.6" width="4.1" height="2.4"/>
+<rect class="bar" x="309.2" y="246.3" width="4.1" height="1.7"/>
+<rect class="bar" x="316.1" y="237.7" width="4.1" height="10.3"/>
+<rect class="bar" x="322.9" y="244.1" width="4.1" height="3.9"/>
+<rect class="bar" x="329.8" y="244.4" width="4.1" height="3.6"/>
+<rect class="bar" x="336.7" y="244.4" width="4.1" height="3.6"/>
+<rect class="bar" x="343.6" y="247.1" width="4.1" height="0.9"/>
+<rect class="bar" x="350.4" y="243.3" width="4.1" height="4.7"/>
+<rect class="bar" x="357.3" y="247.7" width="4.1" height="0.5"/>
+<rect class="bar" x="364.2" y="237.9" width="4.1" height="10.1"/>
+<rect class="bar" x="371.1" y="230.9" width="4.1" height="17.1"/>
+<rect class="bar" x="377.9" y="247.8" width="4.1" height="0.5"/>
+<rect class="bar" x="384.8" y="240.0" width="4.1" height="8.0"/>
+<rect class="bar" x="391.7" y="241.0" width="4.1" height="7.0"/>
+<rect class="bar" x="398.6" y="247.1" width="4.1" height="0.9"/>
+<rect class="bar" x="405.4" y="247.6" width="4.1" height="0.5"/>
+<rect class="bar" x="412.3" y="246.9" width="4.1" height="1.1"/>
+<rect class="bar" x="419.2" y="240.9" width="4.1" height="7.1"/>
+<rect class="bar" x="426.1" y="241.3" width="4.1" height="6.7"/>
+<rect class="bar" x="432.9" y="246.4" width="4.1" height="1.6"/>
+<rect class="bar" x="439.8" y="247.4" width="4.1" height="0.6"/>
+<rect class="bar" x="446.7" y="234.2" width="4.1" height="13.8"/>
+<rect class="bar" x="453.6" y="244.3" width="4.1" height="3.7"/>
+<rect class="bar" x="460.4" y="240.4" width="4.1" height="7.6"/>
+<rect class="bar" x="467.3" y="242.5" width="4.1" height="5.5"/>
+<rect class="bar" x="474.2" y="246.2" width="4.1" height="1.8"/>
+<rect class="bar" x="481.1" y="246.5" width="4.1" height="1.5"/>
+<rect class="bar" x="487.9" y="243.2" width="4.1" height="4.8"/>
+<line class="axis" x1="50" x2="490" y1="248" y2="248"/>
+<text class="tick" x="44" y="195.5" text-anchor="end">4만</text>
+<text class="tick" x="44" y="251.5" text-anchor="end">0</text>
+<path class="ln-vma" d="M180.6,237.2 L187.5,234.5 L194.4,234.8 L201.2,233.0 L208.1,232.7 L215.0,233.8 L221.9,234.6 L228.8,235.5 L235.6,236.3 L242.5,236.7 L249.4,236.1 L256.2,237.5 L263.1,237.9 L270.0,237.5 L276.9,237.5 L283.8,237.6 L290.6,238.4 L297.5,238.0 L304.4,237.9 L311.2,237.8 L318.1,237.3 L325.0,239.9 L331.9,239.7 L338.8,241.6 L345.6,243.0 L352.5,242.8 L359.4,242.8 L366.2,242.3 L373.1,241.8 L380.0,242.0 L386.9,242.3 L393.8,242.0 L400.6,242.0 L407.5,242.7 L414.4,243.5 L421.2,243.2 L428.1,243.0 L435.0,243.4 L441.9,243.5 L448.8,242.9 L455.6,243.2 L462.5,243.0 L469.4,243.0 L476.2,243.0 L483.1,243.0 L490.0,243.0"/>
+<circle class="dot-vma" cx="483.1" cy="243.0" r="4.5"/>
+<text class="tick" x="50.0" y="262" text-anchor="start">08-21</text>
+<text class="tick" x="270.0" y="262" text-anchor="middle">10-12</text>
+<text class="tick" x="490.0" y="262" text-anchor="end">11-25</text>
+<line class="cross" x1="0" x2="0" y1="20" y2="248" visibility="hidden"/>
+<rect class="hit" x="50" y="20" width="440" height="228" data-l="50" data-xw="6.8750" data-n="65"/>
+</svg>
+</section>
+<section class='panel card' id='card-6'><h3>RISE 바이오TOP10액티브</h3><p class='sub'>주식 ETF · 0000Z0 · 종가 7,445 · 평균 거래대금 7.1억</p><div class='stats'><div>하락 기간<b>7일</b></div><div>하락 폭<b>-1.83%</b></div><div>반등 폭<b>+0.06%</b></div><div>기울기 개선<b>0.510%p</b></div><div>거래량/평균<b>1.6배</b></div></div>
+<svg viewBox="0 0 500 268" class="chart" data-uid="6" role="img" aria-label="RISE 바이오TOP10액티브 종가와 MA20, 거래량과 VMA20">
+<rect class="fall" x="428.1" y="20" width="48.1" height="150"/>
+<text class="note" x="432.1" y="32">MA20 하락 구간</text>
+<line class="grid" x1="50" x2="490" y1="170.0" y2="170.0"/>
+<text class="tick" x="44" y="173.5" text-anchor="end">6,000</text>
+<line class="grid" x1="50" x2="490" y1="132.5" y2="132.5"/>
+<text class="tick" x="44" y="136.0" text-anchor="end">7,000</text>
+<line class="grid" x1="50" x2="490" y1="95.0" y2="95.0"/>
+<text class="tick" x="44" y="98.5" text-anchor="end">8,000</text>
+<line class="grid" x1="50" x2="490" y1="57.5" y2="57.5"/>
+<text class="tick" x="44" y="61.0" text-anchor="end">9,000</text>
+<line class="grid" x1="50" x2="490" y1="20.0" y2="20.0"/>
+<text class="tick" x="44" y="23.5" text-anchor="end">10,000</text>
+<path class="ln-close" d="M50.0,55.6 L56.9,33.5 L63.8,43.6 L70.6,39.3 L77.5,37.2 L84.4,35.2 L91.2,50.4 L98.1,55.6 L105.0,64.8 L111.9,77.8 L118.8,68.9 L125.6,70.6 L132.5,75.7 L139.4,74.0 L146.2,79.6 L153.1,84.5 L160.0,91.6 L166.9,87.7 L173.8,89.0 L180.6,83.8 L187.5,90.1 L194.4,89.4 L201.2,94.1 L208.1,90.7 L215.0,90.9 L221.9,91.2 L228.8,91.4 L235.6,69.5 L242.5,75.1 L249.4,66.9 L256.2,73.6 L263.1,90.7 L270.0,103.4 L276.9,117.5 L283.8,122.2 L290.6,134.0 L297.5,113.2 L304.4,106.2 L311.2,110.8 L318.1,104.0 L325.0,112.1 L331.9,116.6 L338.8,122.9 L345.6,125.8 L352.5,118.6 L359.4,121.8 L366.2,125.2 L373.1,126.1 L380.0,132.5 L386.9,133.2 L393.8,117.7 L400.6,131.8 L407.5,133.1 L414.4,122.2 L421.2,115.2 L428.1,120.7 L435.0,121.1 L441.9,128.9 L448.8,129.5 L455.6,128.9 L462.5,120.7 L469.4,125.9 L476.2,131.2 L483.1,125.6 L490.0,115.8"/>
+<path class="ln-ma" d="M180.6,64.9 L187.5,66.7 L194.4,69.4 L201.2,72.0 L208.1,74.5 L215.0,77.2 L221.9,80.0 L228.8,82.1 L235.6,82.8 L242.5,83.3 L249.4,82.7 L256.2,83.0 L263.1,84.0 L270.0,85.4 L276.9,87.5 L283.8,89.7 L290.6,92.1 L297.5,93.2 L304.4,94.1 L311.2,95.2 L318.1,96.2 L325.0,97.3 L331.9,98.7 L338.8,100.1 L345.6,101.9 L352.5,103.3 L359.4,104.8 L366.2,106.5 L373.1,109.3 L380.0,112.2 L386.9,115.5 L393.8,117.7 L400.6,119.8 L407.5,121.3 L414.4,121.5 L421.2,121.1 L428.1,120.5 L435.0,120.9 L441.9,122.0 L448.8,122.9 L455.6,124.2 L462.5,124.6 L469.4,125.1 L476.2,125.5 L483.1,125.5 L490.0,125.4"/>
+<circle class="dot-ma" cx="483.1" cy="125.5" r="5"/>
+<text class="lbl" x="475.1" y="141.5" text-anchor="end">전환 11-24</text>
+<rect class="bar" x="47.9" y="199.5" width="4.1" height="48.5"/>
+<rect class="bar" x="54.8" y="202.7" width="4.1" height="45.3"/>
+<rect class="bar" x="61.7" y="221.1" width="4.1" height="26.9"/>
+<rect class="bar" x="68.6" y="210.7" width="4.1" height="37.3"/>
+<rect class="bar" x="75.4" y="229.2" width="4.1" height="18.8"/>
+<rect class="bar" x="82.3" y="237.5" width="4.1" height="10.5"/>
+<rect class="bar" x="89.2" y="224.4" width="4.1" height="23.6"/>
+<rect class="bar" x="96.1" y="227.5" width="4.1" height="20.5"/>
+<rect class="bar" x="102.9" y="222.8" width="4.1" height="25.2"/>
+<rect class="bar" x="109.8" y="223.2" width="4.1" height="24.8"/>
+<rect class="bar" x="116.7" y="233.3" width="4.1" height="14.7"/>
+<rect class="bar" x="123.6" y="232.7" width="4.1" height="15.3"/>
+<rect class="bar" x="130.4" y="239.1" width="4.1" height="8.9"/>
+<rect class="bar" x="137.3" y="237.2" width="4.1" height="10.8"/>
+<rect class="bar" x="144.2" y="231.7" width="4.1" height="16.3"/>
+<rect class="bar" x="151.1" y="235.7" width="4.1" height="12.3"/>
+<rect class="bar" x="157.9" y="236.4" width="4.1" height="11.6"/>
+<rect class="bar" x="164.8" y="233.1" width="4.1" height="14.9"/>
+<rect class="bar" x="171.7" y="232.8" width="4.1" height="15.2"/>
+<rect class="bar" x="178.6" y="241.0" width="4.1" height="7.0"/>
+<rect class="bar" x="185.4" y="230.5" width="4.1" height="17.5"/>
+<rect class="bar" x="192.3" y="238.7" width="4.1" height="9.3"/>
+<rect class="bar" x="199.2" y="232.8" width="4.1" height="15.2"/>
+<rect class="bar" x="206.1" y="237.3" width="4.1" height="10.7"/>
+<rect class="bar" x="212.9" y="238.6" width="4.1" height="9.4"/>
+<rect class="bar" x="219.8" y="236.5" width="4.1" height="11.5"/>
+<rect class="bar" x="226.7" y="242.6" width="4.1" height="5.4"/>
+<rect class="bar" x="233.6" y="212.1" width="4.1" height="35.9"/>
+<rect class="bar" x="240.4" y="232.0" width="4.1" height="16.0"/>
+<rect class="bar" x="247.3" y="229.4" width="4.1" height="18.6"/>
+<rect class="bar" x="254.2" y="235.2" width="4.1" height="12.8"/>
+<rect class="bar" x="261.1" y="225.0" width="4.1" height="23.0"/>
+<rect class="bar" x="267.9" y="231.2" width="4.1" height="16.8"/>
+<rect class="bar" x="274.8" y="230.2" width="4.1" height="17.8"/>
+<rect class="bar" x="281.7" y="234.1" width="4.1" height="13.9"/>
+<rect class="bar" x="288.6" y="228.6" width="4.1" height="19.4"/>
+<rect class="bar" x="295.4" y="221.6" width="4.1" height="26.4"/>
+<rect class="bar" x="302.3" y="232.0" width="4.1" height="16.0"/>
+<rect class="bar" x="309.2" y="217.3" width="4.1" height="30.7"/>
+<rect class="bar" x="316.1" y="237.7" width="4.1" height="10.3"/>
+<rect class="bar" x="322.9" y="239.7" width="4.1" height="8.3"/>
+<rect class="bar" x="329.8" y="235.8" width="4.1" height="12.2"/>
+<rect class="bar" x="336.7" y="245.1" width="4.1" height="2.9"/>
+<rect class="bar" x="343.6" y="239.0" width="4.1" height="9.0"/>
+<rect class="bar" x="350.4" y="235.1" width="4.1" height="12.9"/>
+<rect class="bar" x="357.3" y="237.4" width="4.1" height="10.6"/>
+<rect class="bar" x="364.2" y="233.8" width="4.1" height="14.2"/>
+<rect class="bar" x="371.1" y="241.3" width="4.1" height="6.7"/>
+<rect class="bar" x="377.9" y="244.1" width="4.1" height="3.9"/>
+<rect class="bar" x="384.8" y="228.4" width="4.1" height="19.6"/>
+<rect class="bar" x="391.7" y="210.6" width="4.1" height="37.4"/>
+<rect class="bar" x="398.6" y="225.3" width="4.1" height="22.7"/>
+<rect class="bar" x="405.4" y="226.5" width="4.1" height="21.5"/>
+<rect class="bar" x="412.3" y="233.8" width="4.1" height="14.2"/>
+<rect class="bar" x="419.2" y="227.6" width="4.1" height="20.4"/>
+<rect class="bar" x="426.1" y="238.5" width="4.1" height="9.5"/>
+<rect class="bar" x="432.9" y="233.3" width="4.1" height="14.7"/>
+<rect class="bar" x="439.8" y="240.9" width="4.1" height="7.1"/>
+<rect class="bar" x="446.7" y="242.5" width="4.1" height="5.5"/>
+<rect class="bar" x="453.6" y="239.9" width="4.1" height="8.1"/>
+<rect class="bar" x="460.4" y="238.8" width="4.1" height="9.2"/>
+<rect class="bar" x="467.3" y="239.7" width="4.1" height="8.3"/>
+<rect class="bar" x="474.2" y="242.1" width="4.1" height="5.9"/>
+<rect class="bar" x="481.1" y="235.2" width="4.1" height="12.8"/>
+<rect class="bar" x="487.9" y="226.0" width="4.1" height="22.0"/>
+<line class="axis" x1="50" x2="490" y1="248" y2="248"/>
+<text class="tick" x="44" y="195.5" text-anchor="end">40만</text>
+<text class="tick" x="44" y="251.5" text-anchor="end">0</text>
+<path class="ln-vma" d="M180.6,227.6 L187.5,229.1 L194.4,230.9 L201.2,231.5 L208.1,232.8 L215.0,233.3 L221.9,233.3 L228.8,234.2 L235.6,233.4 L242.5,233.9 L249.4,234.2 L256.2,234.3 L263.1,233.9 L270.0,233.5 L276.9,233.1 L283.8,233.3 L290.6,232.9 L297.5,232.2 L304.4,232.1 L311.2,231.3 L318.1,231.2 L325.0,231.6 L331.9,231.5 L338.8,232.1 L345.6,232.2 L352.5,232.0 L359.4,232.1 L366.2,231.6 L373.1,233.1 L380.0,233.7 L386.9,233.6 L393.8,232.4 L400.6,232.4 L407.5,232.2 L414.4,232.4 L421.2,232.0 L428.1,232.5 L435.0,233.1 L441.9,233.6 L448.8,234.8 L455.6,234.9 L462.5,234.9 L469.4,235.1 L476.2,234.9 L483.1,234.7 L490.0,234.3"/>
+<circle class="dot-vma" cx="476.2" cy="234.9" r="4.5"/>
+<text class="tick" x="50.0" y="262" text-anchor="start">08-21</text>
+<text class="tick" x="270.0" y="262" text-anchor="middle">10-12</text>
+<text class="tick" x="490.0" y="262" text-anchor="end">11-25</text>
+<line class="cross" x1="0" x2="0" y1="20" y2="248" visibility="hidden"/>
+<rect class="hit" x="50" y="20" width="440" height="228" data-l="50" data-xw="6.8750" data-n="65"/>
+</svg>
+</section>
+<section class='panel card' id='card-7'><h3>HANARO e커머스</h3><p class='sub'>주식 ETF · 322400 · 종가 8,650 · 평균 거래대금 0.5억</p><div class='stats'><div>하락 기간<b>10일</b></div><div>하락 폭<b>-1.49%</b></div><div>반등 폭<b>+0.01%</b></div><div>기울기 개선<b>0.348%p</b></div><div>거래량/평균<b>0.29배</b></div></div>
+<svg viewBox="0 0 500 268" class="chart" data-uid="7" role="img" aria-label="HANARO e커머스 종가와 MA20, 거래량과 VMA20">
+<rect class="fall" x="414.4" y="20" width="68.8" height="150"/>
+<text class="note" x="418.4" y="32">MA20 하락 구간</text>
+<line class="grid" x1="50" x2="490" y1="170.0" y2="170.0"/>
+<text class="tick" x="44" y="173.5" text-anchor="end">7,000</text>
+<line class="grid" x1="50" x2="490" y1="132.5" y2="132.5"/>
+<text class="tick" x="44" y="136.0" text-anchor="end">8,000</text>
+<line class="grid" x1="50" x2="490" y1="95.0" y2="95.0"/>
+<text class="tick" x="44" y="98.5" text-anchor="end">9,000</text>
+<line class="grid" x1="50" x2="490" y1="57.5" y2="57.5"/>
+<text class="tick" x="44" y="61.0" text-anchor="end">10,000</text>
+<line class="grid" x1="50" x2="490" y1="20.0" y2="20.0"/>
+<text class="tick" x="44" y="23.5" text-anchor="end">11,000</text>
+<path class="ln-close" d="M50.0,46.1 L56.9,38.8 L63.8,38.2 L70.6,32.9 L77.5,38.4 L84.4,30.5 L91.2,32.2 L98.1,35.4 L105.0,50.6 L111.9,47.8 L118.8,43.8 L125.6,41.2 L132.5,45.1 L139.4,49.6 L146.2,48.7 L153.1,55.6 L160.0,53.8 L166.9,55.2 L173.8,66.3 L180.6,67.4 L187.5,72.5 L194.4,70.6 L201.2,70.6 L208.1,74.9 L215.0,69.3 L221.9,73.6 L228.8,73.8 L235.6,73.4 L242.5,76.8 L249.4,74.8 L256.2,77.6 L263.1,83.0 L270.0,87.3 L276.9,94.6 L283.8,97.6 L290.6,103.1 L297.5,94.4 L304.4,86.7 L311.2,92.6 L318.1,95.6 L325.0,100.8 L331.9,109.6 L338.8,112.2 L345.6,113.4 L352.5,109.1 L359.4,109.6 L366.2,110.8 L373.1,104.9 L380.0,110.8 L386.9,111.9 L393.8,91.6 L400.6,95.8 L407.5,101.8 L414.4,94.2 L421.2,99.7 L428.1,105.1 L435.0,109.2 L441.9,108.7 L448.8,110.2 L455.6,110.9 L462.5,105.7 L469.4,111.9 L476.2,127.4 L483.1,115.4 L490.0,108.1"/>
+<path class="ln-ma" d="M180.6,45.9 L187.5,47.2 L194.4,48.8 L201.2,50.4 L208.1,52.5 L215.0,54.1 L221.9,56.2 L228.8,58.3 L235.6,60.2 L242.5,61.5 L249.4,62.9 L256.2,64.6 L263.1,66.6 L270.0,68.8 L276.9,71.0 L283.8,73.4 L290.6,75.8 L297.5,77.9 L304.4,79.4 L311.2,80.7 L318.1,82.1 L325.0,83.6 L331.9,85.5 L338.8,87.6 L345.6,89.5 L352.5,91.5 L359.4,93.3 L366.2,95.2 L373.1,96.7 L380.0,98.4 L386.9,100.3 L393.8,101.0 L400.6,101.6 L407.5,102.3 L414.4,102.3 L421.2,102.4 L428.1,102.5 L435.0,103.3 L441.9,104.4 L448.8,105.2 L455.6,106.0 L462.5,106.3 L469.4,106.4 L476.2,107.1 L483.1,107.2 L490.0,107.2"/>
+<circle class="dot-ma" cx="490.0" cy="107.2" r="5"/>
+<text class="lbl" x="482.0" y="123.2" text-anchor="end">전환 11-25</text>
+<rect class="bar" x="47.9" y="246.8" width="4.1" height="1.2"/>
+<rect class="bar" x="54.8" y="246.5" width="4.1" height="1.5"/>
+<rect class="bar" x="61.7" y="238.4" width="4.1" height="9.6"/>
+<rect class="bar" x="68.6" y="236.5" width="4.1" height="11.5"/>
+<rect class="bar" x="75.4" y="240.3" width="4.1" height="7.7"/>
+<rect class="bar" x="82.3" y="242.6" width="4.1" height="5.4"/>
+<rect class="bar" x="89.2" y="246.6" width="4.1" height="1.4"/>
+<rect class="bar" x="96.1" y="230.6" width="4.1" height="17.4"/>
+<rect class="bar" x="102.9" y="242.0" width="4.1" height="6.0"/>
+<rect class="bar" x="109.8" y="245.1" width="4.1" height="2.9"/>
+<rect class="bar" x="116.7" y="240.0" width="4.1" height="8.0"/>
+<rect class="bar" x="123.6" y="245.5" width="4.1" height="2.5"/>
+<rect class="bar" x="130.4" y="242.7" width="4.1" height="5.3"/>
+<rect class="bar" x="137.3" y="241.3" width="4.1" height="6.7"/>
+<rect class="bar" x="144.2" y="243.5" width="4.1" height="4.5"/>
+<rect class="bar" x="151.1" y="246.8" width="4.1" height="1.2"/>
+<rect class="bar" x="157.9" y="246.8" width="4.1" height="1.2"/>
+<rect class="bar" x="164.8" y="245.7" width="4.1" height="2.3"/>
+<rect class="bar" x="171.7" y="239.2" width="4.1" height="8.8"/>
+<rect class="bar" x="178.6" y="246.6" width="4.1" height="1.4"/>
+<rect class="bar" x="185.4" y="237.6" width="4.1" height="10.4"/>
+<rect class="bar" x="192.3" y="247.1" width="4.1" height="0.9"/>
+<rect class="bar" x="199.2" y="243.8" width="4.1" height="4.2"/>
+<rect class="bar" x="206.1" y="247.1" width="4.1" height="0.9"/>
+<rect class="bar" x="212.9" y="246.5" width="4.1" height="1.5"/>
+<rect class="bar" x="219.8" y="243.4" width="4.1" height="4.6"/>
+<rect class="bar" x="226.7" y="245.0" width="4.1" height="3.0"/>
+<rect class="bar" x="233.6" y="246.0" width="4.1" height="2.0"/>
+<rect class="bar" x="240.4" y="245.3" width="4.1" height="2.7"/>
+<rect class="bar" x="247.3" y="247.2" width="4.1" height="0.8"/>
+<rect class="bar" x="254.2" y="240.9" width="4.1" height="7.1"/>
+<rect class="bar" x="261.1" y="247.5" width="4.1" height="0.5"/>
+<rect class="bar" x="267.9" y="243.8" width="4.1" height="4.2"/>
+<rect class="bar" x="274.8" y="234.1" width="4.1" height="13.9"/>
+<rect class="bar" x="281.7" y="246.1" width="4.1" height="1.9"/>
+<rect class="bar" x="288.6" y="241.1" width="4.1" height="6.9"/>
+<rect class="bar" x="295.4" y="243.9" width="4.1" height="4.1"/>
+<rect class="bar" x="302.3" y="246.2" width="4.1" height="1.8"/>
+<rect class="bar" x="309.2" y="243.1" width="4.1" height="4.9"/>
+<rect class="bar" x="316.1" y="247.6" width="4.1" height="0.5"/>
+<rect class="bar" x="322.9" y="242.1" width="4.1" height="5.9"/>
+<rect class="bar" x="329.8" y="246.3" width="4.1" height="1.7"/>
+<rect class="bar" x="336.7" y="247.6" width="4.1" height="0.5"/>
+<rect class="bar" x="343.6" y="243.7" width="4.1" height="4.3"/>
+<rect class="bar" x="350.4" y="246.8" width="4.1" height="1.2"/>
+<rect class="bar" x="357.3" y="247.6" width="4.1" height="0.5"/>
+<rect class="bar" x="364.2" y="213.6" width="4.1" height="34.4"/>
+<rect class="bar" x="371.1" y="203.2" width="4.1" height="44.8"/>
+<rect class="bar" x="377.9" y="240.1" width="4.1" height="7.9"/>
+<rect class="bar" x="384.8" y="247.2" width="4.1" height="0.8"/>
+<rect class="bar" x="391.7" y="246.6" width="4.1" height="1.4"/>
+<rect class="bar" x="398.6" y="246.3" width="4.1" height="1.7"/>
+<rect class="bar" x="405.4" y="247.5" width="4.1" height="0.5"/>
+<rect class="bar" x="412.3" y="230.5" width="4.1" height="17.5"/>
+<rect class="bar" x="419.2" y="246.4" width="4.1" height="1.6"/>
+<rect class="bar" x="426.1" y="247.9" width="4.1" height="0.5"/>
+<rect class="bar" x="432.9" y="247.8" width="4.1" height="0.5"/>
+<rect class="bar" x="439.8" y="247.8" width="4.1" height="0.5"/>
+<rect class="bar" x="446.7" y="234.0" width="4.1" height="14.0"/>
+<rect class="bar" x="453.6" y="247.5" width="4.1" height="0.5"/>
+<rect class="bar" x="460.4" y="233.5" width="4.1" height="14.5"/>
+<rect class="bar" x="467.3" y="246.1" width="4.1" height="1.9"/>
+<rect class="bar" x="474.2" y="246.6" width="4.1" height="1.4"/>
+<rect class="bar" x="481.1" y="247.7" width="4.1" height="0.5"/>
+<rect class="bar" x="487.9" y="245.9" width="4.1" height="2.1"/>
+<line class="axis" x1="50" x2="490" y1="248" y2="248"/>
+<text class="tick" x="44" y="195.5" text-anchor="end">4만</text>
+<text class="tick" x="44" y="251.5" text-anchor="end">0</text>
+<path class="ln-vma" d="M180.6,242.7 L187.5,242.2 L194.4,242.2 L201.2,242.5 L208.1,243.0 L215.0,243.4 L221.9,243.4 L228.8,243.3 L235.6,244.1 L242.5,244.3 L249.4,244.4 L256.2,244.4 L263.1,244.5 L270.0,244.6 L276.9,244.2 L283.8,244.3 L290.6,244.0 L297.5,243.9 L304.4,243.9 L311.2,244.1 L318.1,244.2 L325.0,244.4 L331.9,244.4 L338.8,244.6 L345.6,244.4 L352.5,244.4 L359.4,244.6 L366.2,243.0 L373.1,240.9 L380.0,240.6 L386.9,240.6 L393.8,240.9 L400.6,240.9 L407.5,241.0 L414.4,240.9 L421.2,240.9 L428.1,241.2 L435.0,241.4 L441.9,241.5 L448.8,241.0 L455.6,241.0 L462.5,240.6 L469.4,240.6 L476.2,240.5 L483.1,240.7 L490.0,240.7"/>
+<circle class="dot-vma" cx="490.0" cy="240.7" r="4.5"/>
+<text class="tick" x="50.0" y="262" text-anchor="start">08-21</text>
+<text class="tick" x="270.0" y="262" text-anchor="middle">10-12</text>
+<text class="tick" x="490.0" y="262" text-anchor="end">11-25</text>
+<line class="cross" x1="0" x2="0" y1="20" y2="248" visibility="hidden"/>
+<rect class="hit" x="50" y="20" width="440" height="228" data-l="50" data-xw="6.8750" data-n="65"/>
+</svg>
+</section>
+<section class='panel card' id='card-8'><h3>음식료·담배</h3><p class='sub'>지수 · KOSPI · 종가 4,813.03 · 평균 거래대금 1698.7억</p><div class='stats'><div>하락 기간<b>10일</b></div><div>하락 폭<b>-1.22%</b></div><div>반등 폭<b>+0.13%</b></div><div>기울기 개선<b>0.325%p</b></div><div>거래량/평균<b>1.08배</b></div></div>
+<svg viewBox="0 0 500 268" class="chart" data-uid="8" role="img" aria-label="음식료·담배 종가와 MA20, 거래량과 VMA20">
+<rect class="fall" x="407.5" y="20" width="68.8" height="150"/>
+<text class="note" x="411.5" y="32">MA20 하락 구간</text>
+<line class="grid" x1="50" x2="490" y1="170.0" y2="170.0"/>
+<text class="tick" x="44" y="173.5" text-anchor="end">4,400</text>
+<line class="grid" x1="50" x2="490" y1="132.5" y2="132.5"/>
+<text class="tick" x="44" y="136.0" text-anchor="end">4,600</text>
+<line class="grid" x1="50" x2="490" y1="95.0" y2="95.0"/>
+<text class="tick" x="44" y="98.5" text-anchor="end">4,800</text>
+<line class="grid" x1="50" x2="490" y1="57.5" y2="57.5"/>
+<text class="tick" x="44" y="61.0" text-anchor="end">5,000</text>
+<line class="grid" x1="50" x2="490" y1="20.0" y2="20.0"/>
+<text class="tick" x="44" y="23.5" text-anchor="end">5,200</text>
+<path class="ln-close" d="M50.0,85.3 L56.9,68.3 L63.8,61.3 L70.6,45.4 L77.5,60.3 L84.4,35.2 L91.2,35.9 L98.1,47.8 L105.0,54.4 L111.9,59.2 L118.8,67.9 L125.6,90.8 L132.5,99.1 L139.4,108.0 L146.2,103.9 L153.1,98.6 L160.0,94.5 L166.9,108.5 L173.8,116.0 L180.6,107.8 L187.5,114.4 L194.4,114.6 L201.2,112.5 L208.1,124.5 L215.0,116.8 L221.9,111.6 L228.8,120.9 L235.6,123.9 L242.5,121.4 L249.4,122.7 L256.2,112.9 L263.1,125.6 L270.0,116.2 L276.9,117.2 L283.8,122.0 L290.6,104.2 L297.5,85.5 L304.4,74.6 L311.2,76.4 L318.1,77.5 L325.0,85.3 L331.9,96.3 L338.8,116.5 L345.6,119.9 L352.5,108.4 L359.4,103.2 L366.2,93.5 L373.1,91.1 L380.0,90.6 L386.9,90.3 L393.8,68.6 L400.6,83.6 L407.5,112.5 L414.4,126.4 L421.2,132.0 L428.1,127.8 L435.0,127.8 L441.9,104.1 L448.8,106.9 L455.6,103.7 L462.5,103.0 L469.4,111.2 L476.2,131.9 L483.1,112.1 L490.0,92.6"/>
+<path class="ln-ma" d="M180.6,77.4 L187.5,78.9 L194.4,81.2 L201.2,83.7 L208.1,87.7 L215.0,90.5 L221.9,94.3 L228.8,98.6 L235.6,102.4 L242.5,105.7 L249.4,108.9 L256.2,111.2 L263.1,112.9 L270.0,113.8 L276.9,114.2 L283.8,115.1 L290.6,115.4 L297.5,115.0 L304.4,113.3 L311.2,111.3 L318.1,109.8 L325.0,108.3 L331.9,107.4 L338.8,107.6 L345.6,107.4 L352.5,106.9 L359.4,106.5 L366.2,105.2 L373.1,103.5 L380.0,102.0 L386.9,100.4 L393.8,98.2 L400.6,96.1 L407.5,95.9 L414.4,96.3 L421.2,96.8 L428.1,98.0 L435.0,100.1 L441.9,101.6 L448.8,103.1 L455.6,104.4 L462.5,105.3 L469.4,106.1 L476.2,106.8 L483.1,106.4 L490.0,105.6"/>
+<circle class="dot-ma" cx="483.1" cy="106.4" r="5"/>
+<text class="lbl" x="475.1" y="122.4" text-anchor="end">전환 11-24</text>
+<rect class="bar" x="47.9" y="236.6" width="4.1" height="11.4"/>
+<rect class="bar" x="54.8" y="239.6" width="4.1" height="8.4"/>
+<rect class="bar" x="61.7" y="235.3" width="4.1" height="12.7"/>
+<rect class="bar" x="68.6" y="240.4" width="4.1" height="7.6"/>
+<rect class="bar" x="75.4" y="235.5" width="4.1" height="12.5"/>
+<rect class="bar" x="82.3" y="237.9" width="4.1" height="10.1"/>
+<rect class="bar" x="89.2" y="238.3" width="4.1" height="9.7"/>
+<rect class="bar" x="96.1" y="241.6" width="4.1" height="6.4"/>
+<rect class="bar" x="102.9" y="235.8" width="4.1" height="12.2"/>
+<rect class="bar" x="109.8" y="219.4" width="4.1" height="28.6"/>
+<rect class="bar" x="116.7" y="239.5" width="4.1" height="8.5"/>
+<rect class="bar" x="123.6" y="239.8" width="4.1" height="8.2"/>
+<rect class="bar" x="130.4" y="240.9" width="4.1" height="7.1"/>
+<rect class="bar" x="137.3" y="241.7" width="4.1" height="6.3"/>
+<rect class="bar" x="144.2" y="231.1" width="4.1" height="16.9"/>
+<rect class="bar" x="151.1" y="235.2" width="4.1" height="12.8"/>
+<rect class="bar" x="157.9" y="242.3" width="4.1" height="5.7"/>
+<rect class="bar" x="164.8" y="242.4" width="4.1" height="5.6"/>
+<rect class="bar" x="171.7" y="242.6" width="4.1" height="5.4"/>
+<rect class="bar" x="178.6" y="244.2" width="4.1" height="3.8"/>
+<rect class="bar" x="185.4" y="240.5" width="4.1" height="7.5"/>
+<rect class="bar" x="192.3" y="243.3" width="4.1" height="4.7"/>
+<rect class="bar" x="199.2" y="243.2" width="4.1" height="4.8"/>
+<rect class="bar" x="206.1" y="243.9" width="4.1" height="4.1"/>
+<rect class="bar" x="212.9" y="243.9" width="4.1" height="4.1"/>
+<rect class="bar" x="219.8" y="244.3" width="4.1" height="3.7"/>
+<rect class="bar" x="226.7" y="243.9" width="4.1" height="4.1"/>
+<rect class="bar" x="233.6" y="244.3" width="4.1" height="3.7"/>
+<rect class="bar" x="240.4" y="244.8" width="4.1" height="3.2"/>
+<rect class="bar" x="247.3" y="244.0" width="4.1" height="4.0"/>
+<rect class="bar" x="254.2" y="244.7" width="4.1" height="3.3"/>
+<rect class="bar" x="261.1" y="242.2" width="4.1" height="5.8"/>
+<rect class="bar" x="267.9" y="241.0" width="4.1" height="7.0"/>
+<rect class="bar" x="274.8" y="241.8" width="4.1" height="6.2"/>
+<rect class="bar" x="281.7" y="242.4" width="4.1" height="5.6"/>
+<rect class="bar" x="288.6" y="241.4" width="4.1" height="6.6"/>
+<rect class="bar" x="295.4" y="242.3" width="4.1" height="5.7"/>
+<rect class="bar" x="302.3" y="244.1" width="4.1" height="3.9"/>
+<rect class="bar" x="309.2" y="243.8" width="4.1" height="4.2"/>
+<rect class="bar" x="316.1" y="244.0" width="4.1" height="4.0"/>
+<rect class="bar" x="322.9" y="243.4" width="4.1" height="4.6"/>
+<rect class="bar" x="329.8" y="242.5" width="4.1" height="5.5"/>
+<rect class="bar" x="336.7" y="242.2" width="4.1" height="5.8"/>
+<rect class="bar" x="343.6" y="242.3" width="4.1" height="5.7"/>
+<rect class="bar" x="350.4" y="243.0" width="4.1" height="5.0"/>
+<rect class="bar" x="357.3" y="242.5" width="4.1" height="5.5"/>
+<rect class="bar" x="364.2" y="242.6" width="4.1" height="5.4"/>
+<rect class="bar" x="371.1" y="242.4" width="4.1" height="5.6"/>
+<rect class="bar" x="377.9" y="242.5" width="4.1" height="5.5"/>
+<rect class="bar" x="384.8" y="242.8" width="4.1" height="5.2"/>
+<rect class="bar" x="391.7" y="242.2" width="4.1" height="5.8"/>
+<rect class="bar" x="398.6" y="240.8" width="4.1" height="7.2"/>
+<rect class="bar" x="405.4" y="242.1" width="4.1" height="5.9"/>
+<rect class="bar" x="412.3" y="242.8" width="4.1" height="5.2"/>
+<rect class="bar" x="419.2" y="243.1" width="4.1" height="4.9"/>
+<rect class="bar" x="426.1" y="242.2" width="4.1" height="5.8"/>
+<rect class="bar" x="432.9" y="242.8" width="4.1" height="5.2"/>
+<rect class="bar" x="439.8" y="243.0" width="4.1" height="5.0"/>
+<rect class="bar" x="446.7" y="243.8" width="4.1" height="4.2"/>
+<rect class="bar" x="453.6" y="243.4" width="4.1" height="4.6"/>
+<rect class="bar" x="460.4" y="244.7" width="4.1" height="3.3"/>
+<rect class="bar" x="467.3" y="242.6" width="4.1" height="5.4"/>
+<rect class="bar" x="474.2" y="240.9" width="4.1" height="7.1"/>
+<rect class="bar" x="481.1" y="243.5" width="4.1" height="4.5"/>
+<rect class="bar" x="487.9" y="242.2" width="4.1" height="5.8"/>
+<line class="axis" x1="50" x2="490" y1="248" y2="248"/>
+<text class="tick" x="44" y="195.5" text-anchor="end">2,000만</text>
+<text class="tick" x="44" y="251.5" text-anchor="end">0</text>
+<path class="ln-vma" d="M180.6,238.0 L187.5,238.2 L194.4,238.4 L201.2,238.8 L208.1,239.0 L215.0,239.4 L221.9,239.7 L228.8,240.0 L235.6,240.1 L242.5,240.6 L249.4,241.8 L256.2,242.0 L263.1,242.2 L270.0,242.2 L276.9,242.2 L283.8,242.7 L290.6,243.1 L297.5,243.1 L304.4,243.1 L311.2,243.2 L318.1,243.2 L325.0,243.3 L331.9,243.3 L338.8,243.2 L345.6,243.2 L352.5,243.1 L359.4,243.0 L366.2,243.0 L373.1,242.9 L380.0,242.8 L386.9,242.7 L393.8,242.6 L400.6,242.5 L407.5,242.6 L414.4,242.6 L421.2,242.7 L428.1,242.7 L435.0,242.7 L441.9,242.7 L448.8,242.7 L455.6,242.6 L462.5,242.7 L469.4,242.7 L476.2,242.6 L483.1,242.7 L490.0,242.7"/>
+<circle class="dot-vma" cx="490.0" cy="242.7" r="4.5"/>
+<text class="tick" x="50.0" y="262" text-anchor="start">08-21</text>
+<text class="tick" x="270.0" y="262" text-anchor="middle">10-12</text>
+<text class="tick" x="490.0" y="262" text-anchor="end">11-25</text>
+<line class="cross" x1="0" x2="0" y1="20" y2="248" visibility="hidden"/>
+<rect class="hit" x="50" y="20" width="440" height="228" data-l="50" data-xw="6.8750" data-n="65"/>
+</svg>
+</section>
+<section class='panel card' id='card-9'><h3>HANARO Fn K-푸드</h3><p class='sub'>주식 ETF · 438900 · 종가 10,650 · 평균 거래대금 2.0억</p><div class='stats'><div>하락 기간<b>11일</b></div><div>하락 폭<b>-1.17%</b></div><div>반등 폭<b>+0.06%</b></div><div>기울기 개선<b>0.309%p</b></div><div>거래량/평균<b>2.99배</b></div></div>
+<svg viewBox="0 0 500 268" class="chart" data-uid="9" role="img" aria-label="HANARO Fn K-푸드 종가와 MA20, 거래량과 VMA20">
+<rect class="fall" x="407.5" y="20" width="75.6" height="150"/>
+<text class="note" x="411.5" y="32">MA20 하락 구간</text>
+<line class="grid" x1="50" x2="490" y1="170.0" y2="170.0"/>
+<text class="tick" x="44" y="173.5" text-anchor="end">10,000</text>
+<line class="grid" x1="50" x2="490" y1="120.0" y2="120.0"/>
+<text class="tick" x="44" y="123.5" text-anchor="end">11,000</text>
+<line class="grid" x1="50" x2="490" y1="70.0" y2="70.0"/>
+<text class="tick" x="44" y="73.5" text-anchor="end">12,000</text>
+<line class="grid" x1="50" x2="490" y1="20.0" y2="20.0"/>
+<text class="tick" x="44" y="23.5" text-anchor="end">13,000</text>
+<path class="ln-close" d="M50.0,97.2 L56.9,75.2 L63.8,75.0 L70.6,60.7 L77.5,78.8 L84.4,60.0 L91.2,62.0 L98.1,65.2 L105.0,70.8 L111.9,76.5 L118.8,79.8 L125.6,95.0 L132.5,100.5 L139.4,105.5 L146.2,102.5 L153.1,102.5 L160.0,102.2 L166.9,111.5 L173.8,121.8 L180.6,120.2 L187.5,123.2 L194.4,126.2 L201.2,129.0 L208.1,133.0 L215.0,125.5 L221.9,125.0 L228.8,129.5 L235.6,133.5 L242.5,130.8 L249.4,133.0 L256.2,130.8 L263.1,134.0 L270.0,135.8 L276.9,134.0 L283.8,136.8 L290.6,132.8 L297.5,121.5 L304.4,116.0 L311.2,120.2 L318.1,128.8 L325.0,135.5 L331.9,137.5 L338.8,150.8 L345.6,151.2 L352.5,144.0 L359.4,146.5 L366.2,146.2 L373.1,135.2 L380.0,137.5 L386.9,133.2 L393.8,115.5 L400.6,120.8 L407.5,130.8 L414.4,135.5 L421.2,139.5 L428.1,146.8 L435.0,148.0 L441.9,140.5 L448.8,141.0 L455.6,140.5 L462.5,139.8 L469.4,144.0 L476.2,160.2 L483.1,155.0 L490.0,137.5"/>
+<path class="ln-ma" d="M180.6,88.2 L187.5,89.4 L194.4,92.0 L201.2,94.7 L208.1,98.3 L215.0,100.7 L221.9,103.9 L228.8,107.3 L235.6,110.7 L242.5,113.7 L249.4,116.5 L256.2,119.1 L263.1,121.0 L270.0,122.8 L276.9,124.2 L283.8,125.9 L290.6,127.4 L297.5,128.4 L304.4,128.6 L311.2,128.5 L318.1,129.0 L325.0,129.6 L331.9,130.1 L338.8,131.2 L345.6,132.1 L352.5,133.1 L359.4,134.1 L366.2,135.0 L373.1,135.1 L380.0,135.4 L386.9,135.4 L393.8,134.7 L400.6,134.0 L407.5,133.7 L414.4,133.8 L421.2,133.9 L428.1,134.7 L435.0,136.0 L441.9,137.2 L448.8,138.2 L455.6,138.8 L462.5,139.0 L469.4,139.4 L476.2,139.8 L483.1,140.0 L490.0,139.7"/>
+<circle class="dot-ma" cx="490.0" cy="139.7" r="5"/>
+<text class="lbl" x="482.0" y="155.7" text-anchor="end">전환 11-25</text>
+<rect class="bar" x="47.9" y="242.2" width="4.1" height="5.8"/>
+<rect class="bar" x="54.8" y="237.3" width="4.1" height="10.7"/>
+<rect class="bar" x="61.7" y="240.6" width="4.1" height="7.4"/>
+<rect class="bar" x="68.6" y="205.4" width="4.1" height="42.6"/>
+<rect class="bar" x="75.4" y="228.9" width="4.1" height="19.1"/>
+<rect class="bar" x="82.3" y="223.9" width="4.1" height="24.1"/>
+<rect class="bar" x="89.2" y="226.7" width="4.1" height="21.3"/>
+<rect class="bar" x="96.1" y="221.9" width="4.1" height="26.1"/>
+<rect class="bar" x="102.9" y="236.5" width="4.1" height="11.5"/>
+<rect class="bar" x="109.8" y="236.5" width="4.1" height="11.5"/>
+<rect class="bar" x="116.7" y="242.6" width="4.1" height="5.4"/>
+<rect class="bar" x="123.6" y="217.1" width="4.1" height="30.9"/>
+<rect class="bar" x="130.4" y="216.2" width="4.1" height="31.8"/>
+<rect class="bar" x="137.3" y="238.8" width="4.1" height="9.2"/>
+<rect class="bar" x="144.2" y="239.5" width="4.1" height="8.5"/>
+<rect class="bar" x="151.1" y="241.8" width="4.1" height="6.2"/>
+<rect class="bar" x="157.9" y="242.1" width="4.1" height="5.9"/>
+<rect class="bar" x="164.8" y="245.4" width="4.1" height="2.6"/>
+<rect class="bar" x="171.7" y="234.8" width="4.1" height="13.2"/>
+<rect class="bar" x="178.6" y="246.3" width="4.1" height="1.7"/>
+<rect class="bar" x="185.4" y="244.0" width="4.1" height="4.0"/>
+<rect class="bar" x="192.3" y="242.7" width="4.1" height="5.3"/>
+<rect class="bar" x="199.2" y="239.7" width="4.1" height="8.3"/>
+<rect class="bar" x="206.1" y="243.4" width="4.1" height="4.6"/>
+<rect class="bar" x="212.9" y="242.5" width="4.1" height="5.5"/>
+<rect class="bar" x="219.8" y="246.0" width="4.1" height="2.0"/>
+<rect class="bar" x="226.7" y="244.9" width="4.1" height="3.1"/>
+<rect class="bar" x="233.6" y="244.1" width="4.1" height="3.9"/>
+<rect class="bar" x="240.4" y="241.8" width="4.1" height="6.2"/>
+<rect class="bar" x="247.3" y="243.4" width="4.1" height="4.6"/>
+<rect class="bar" x="254.2" y="243.8" width="4.1" height="4.2"/>
+<rect class="bar" x="261.1" y="246.7" width="4.1" height="1.3"/>
+<rect class="bar" x="267.9" y="243.6" width="4.1" height="4.4"/>
+<rect class="bar" x="274.8" y="243.0" width="4.1" height="5.0"/>
+<rect class="bar" x="281.7" y="243.5" width="4.1" height="4.5"/>
+<rect class="bar" x="288.6" y="239.1" width="4.1" height="8.9"/>
+<rect class="bar" x="295.4" y="242.9" width="4.1" height="5.1"/>
+<rect class="bar" x="302.3" y="244.0" width="4.1" height="4.0"/>
+<rect class="bar" x="309.2" y="240.8" width="4.1" height="7.2"/>
+<rect class="bar" x="316.1" y="238.9" width="4.1" height="9.1"/>
+<rect class="bar" x="322.9" y="244.1" width="4.1" height="3.9"/>
+<rect class="bar" x="329.8" y="244.7" width="4.1" height="3.3"/>
+<rect class="bar" x="336.7" y="244.1" width="4.1" height="3.9"/>
+<rect class="bar" x="343.6" y="244.4" width="4.1" height="3.6"/>
+<rect class="bar" x="350.4" y="245.1" width="4.1" height="2.9"/>
+<rect class="bar" x="357.3" y="247.5" width="4.1" height="0.5"/>
+<rect class="bar" x="364.2" y="243.2" width="4.1" height="4.8"/>
+<rect class="bar" x="371.1" y="243.3" width="4.1" height="4.7"/>
+<rect class="bar" x="377.9" y="243.8" width="4.1" height="4.2"/>
+<rect class="bar" x="384.8" y="246.0" width="4.1" height="2.0"/>
+<rect class="bar" x="391.7" y="236.6" width="4.1" height="11.4"/>
+<rect class="bar" x="398.6" y="240.7" width="4.1" height="7.3"/>
+<rect class="bar" x="405.4" y="243.1" width="4.1" height="4.9"/>
+<rect class="bar" x="412.3" y="241.0" width="4.1" height="7.0"/>
+<rect class="bar" x="419.2" y="239.7" width="4.1" height="8.3"/>
+<rect class="bar" x="426.1" y="242.0" width="4.1" height="6.0"/>
+<rect class="bar" x="432.9" y="246.5" width="4.1" height="1.5"/>
+<rect class="bar" x="439.8" y="239.8" width="4.1" height="8.2"/>
+<rect class="bar" x="446.7" y="245.1" width="4.1" height="2.9"/>
+<rect class="bar" x="453.6" y="245.9" width="4.1" height="2.1"/>
+<rect class="bar" x="460.4" y="246.2" width="4.1" height="1.8"/>
+<rect class="bar" x="467.3" y="244.6" width="4.1" height="3.4"/>
+<rect class="bar" x="474.2" y="243.6" width="4.1" height="4.4"/>
+<rect class="bar" x="481.1" y="245.1" width="4.1" height="2.9"/>
+<rect class="bar" x="487.9" y="232.5" width="4.1" height="15.5"/>
+<line class="axis" x1="50" x2="490" y1="248" y2="248"/>
+<text class="tick" x="44" y="195.5" text-anchor="end">20만</text>
+<text class="tick" x="44" y="251.5" text-anchor="end">0</text>
+<path class="ln-vma" d="M180.6,233.2 L187.5,233.3 L194.4,233.6 L201.2,233.5 L208.1,235.4 L215.0,236.1 L221.9,237.2 L228.8,238.1 L235.6,239.2 L242.5,239.5 L249.4,239.8 L256.2,239.9 L263.1,241.4 L270.0,242.8 L276.9,243.0 L283.8,243.2 L290.6,243.0 L297.5,243.1 L304.4,243.0 L311.2,243.3 L318.1,242.9 L325.0,242.9 L331.9,243.0 L338.8,243.3 L345.6,243.3 L352.5,243.5 L359.4,243.5 L366.2,243.4 L373.1,243.4 L380.0,243.5 L386.9,243.6 L393.8,243.3 L400.6,243.0 L407.5,242.9 L414.4,242.8 L421.2,242.7 L428.1,242.8 L435.0,243.0 L441.9,242.8 L448.8,243.0 L455.6,243.3 L462.5,243.4 L469.4,243.4 L476.2,243.4 L483.1,243.4 L490.0,242.8"/>
+<circle class="dot-vma" cx="490.0" cy="242.8" r="4.5"/>
+<text class="tick" x="50.0" y="262" text-anchor="start">08-21</text>
+<text class="tick" x="270.0" y="262" text-anchor="middle">10-12</text>
+<text class="tick" x="490.0" y="262" text-anchor="end">11-25</text>
+<line class="cross" x1="0" x2="0" y1="20" y2="248" visibility="hidden"/>
+<rect class="hit" x="50" y="20" width="440" height="228" data-l="50" data-xw="6.8750" data-n="65"/>
+</svg>
+</section>
+</div>
+<p class='foot'>이 화면은 “한국거래소 통계정보”(KRX Open API)를 사용한 결과입니다. 기술적 조건으로 걸러낸 결과이며 투자 권유가 아닙니다.</p>
+</main><div id='tip'></div><script id='chart-data' type='application/json'>{"0": {"dates": ["2026-08-21", "2026-08-24", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28", "2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04", "2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11", "2026-09-14", "2026-09-15", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-21", "2026-09-22", "2026-09-23", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22", "2026-10-23", "2026-10-26", "2026-10-27", "2026-10-28", "2026-10-29", "2026-10-30", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06", "2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-16", "2026-11-17", "2026-11-18", "2026-11-19", "2026-11-20", "2026-11-23", "2026-11-24", "2026-11-25"], "close": [4545, 4750, 4860, 4840, 4745, 5085, 5025, 4795, 4680, 4605, 4520, 4440, 4355, 4310, 4250, 4290, 4385, 4305, 4350, 4295, 4325, 4315, 4250, 4245, 4270, 4285, 4180, 4195, 4075, 4135, 4290, 4160, 4040, 3800, 3840, 3800, 4025, 4000, 3880, 3875, 3785, 3690, 3595, 3575, 3605, 3495, 3455, 3540, 3500, 3420, 3565, 3460, 3325, 3410, 3440, 3370, 3325, 3420, 3435, 3490, 3650, 3550, 3575, 3655, 3950], "ma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 4571.5, 4560.5, 4538.75, 4508.25, 4478.5, 4454.75, 4414.75, 4372.5, 4342.5, 4312.25, 4288.75, 4277.25, 4263.25, 4247.5, 4222.0, 4201.5, 4177.0, 4159.0, 4143.75, 4120.25, 4099.25, 4072.25, 4041.0, 4008.25, 3974.75, 3941.5, 3902.0, 3865.75, 3833.0, 3804.25, 3768.5, 3732.25, 3697.25, 3661.5, 3642.0, 3622.0, 3600.5, 3565.5, 3536.5, 3514.25, 3495.0, 3488.25, 3481.25, 3480.25, 3484.25, 3501.5], "vol": [5516134.0, 7254711.0, 10375600.0, 10045302.0, 7287270.0, 14162175.0, 11019052.0, 11530363.0, 10069032.0, 8886695.0, 6613303.0, 5093719.0, 10307627.0, 9621378.0, 5498466.0, 7684329.0, 11660597.0, 5517902.0, 6954475.0, 6874090.0, 5403320.0, 2511665.0, 3560886.0, 3465996.0, 2595736.0, 2387093.0, 3502516.0, 3176750.0, 4689230.0, 5000022.0, 8292970.0, 4088436.0, 4556830.0, 6075688.0, 3368957.0, 4958265.0, 6181737.0, 4282782.0, 3118530.0, 1847267.0, 1510228.0, 2499177.0, 2356256.0, 2260733.0, 2256148.0, 4175073.0, 9393154.0, 4033613.0, 3578475.0, 3817201.0, 4669023.0, 3348183.0, 2070727.0, 2363470.0, 2776949.0, 4309278.0, 2436155.0, 3116912.0, 2773381.0, 2408435.0, 5254783.0, 2473502.0, 5715723.0, 4658805.0, 9977468.0], "vma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 8598611.0, 8592970.3, 8355818.0, 8015082.3, 7686117.0, 7451540.3, 6862786.2, 6486959.4, 6069278.8, 5800288.7, 5605955.0, 5689938.3, 5639674.2, 5352134.3, 5174849.8, 5068374.4, 4932071.2, 4658128.2, 4596372.2, 4404575.0, 4153233.8, 3958579.2, 3957954.8, 3897723.3, 3837460.1, 3820480.8, 3909879.8, 4204411.7, 4247254.8, 4191717.0, 4132576.0, 3951378.6, 3914366.0, 3790060.9, 3604450.0, 3574849.5, 3542400.2, 3355121.1, 3296827.6, 3279570.1, 3307628.5, 3494856.3, 3493572.5, 3661545.9, 3781449.5, 4167515.5], "peak": "2026-09-17", "trough": "2026-11-23", "turn": "2026-11-24", "vturn": "2026-11-23", "name": "TIGER 화장품"}, "1": {"dates": ["2026-08-21", "2026-08-24", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28", "2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04", "2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11", "2026-09-14", "2026-09-15", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-21", "2026-09-22", "2026-09-23", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22", "2026-10-23", "2026-10-26", "2026-10-27", "2026-10-28", "2026-10-29", "2026-10-30", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06", "2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-16", "2026-11-17", "2026-11-18", "2026-11-19", "2026-11-20", "2026-11-23", "2026-11-24", "2026-11-25"], "close": [3020, 3190, 3215, 3160, 3180, 3235, 3205, 3095, 3150, 3070, 3125, 3010, 2960, 3010, 3060, 3025, 3075, 3145, 3085, 3095, 3025, 3010, 2980, 2985, 3085, 3115, 3160, 3275, 3245, 3425, 3385, 3435, 3390, 3555, 3490, 3485, 3595, 3630, 3610, 3545, 3495, 3405, 3330, 3290, 3210, 3155, 3140, 3145, 3105, 3130, 3135, 3185, 3115, 3150, 3300, 3250, 3295, 3250, 3270, 3265, 3365, 3330, 3395, 3350, 3520], "ma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 3105.5, 3105.75, 3096.75, 3085.0, 3076.25, 3071.5, 3065.5, 3063.25, 3072.25, 3077.0, 3094.75, 3107.75, 3129.0, 3150.5, 3177.75, 3199.25, 3222.25, 3248.25, 3272.5, 3298.75, 3321.25, 3344.75, 3364.5, 3382.0, 3397.25, 3403.5, 3405.5, 3404.5, 3398.0, 3391.0, 3376.25, 3363.75, 3351.25, 3337.5, 3317.25, 3307.75, 3296.0, 3281.0, 3262.0, 3245.0, 3231.0, 3224.5, 3220.75, 3224.0, 3227.0, 3242.5], "vol": [212366.0, 152667.0, 145648.0, 129397.0, 33269.0, 43986.0, 28195.0, 113189.0, 54407.0, 76018.0, 49045.0, 199992.0, 110789.0, 82224.0, 10588.0, 18238.0, 23749.0, 26230.0, 25600.0, 15122.0, 34950.0, 24785.0, 31842.0, 69815.0, 47843.0, 72844.0, 19251.0, 45384.0, 53021.0, 78812.0, 39281.0, 6316.0, 45979.0, 113561.0, 59001.0, 46516.0, 110137.0, 77581.0, 64663.0, 65067.0, 9697.0, 93587.0, 44243.0, 9072.0, 29319.0, 35515.0, 60356.0, 18407.0, 27312.0, 42838.0, 19234.0, 32711.0, 71076.0, 16190.0, 44760.0, 10451.0, 30109.0, 40731.0, 113865.0, 1435.0, 3611.0, 20116.0, 27015.0, 18329.0, 51144.0], "vma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 77535.9, 68665.1, 62271.1, 56580.8, 53601.7, 54330.3, 55773.2, 55326.1, 51935.8, 51866.5, 52006.2, 51518.0, 41834.2, 38593.7, 40160.6, 42581.2, 43995.1, 48314.5, 50882.1, 52835.2, 55332.4, 54069.8, 57509.9, 58129.9, 55092.8, 54166.6, 52300.2, 54355.4, 53006.6, 51721.1, 49922.4, 48920.1, 50239.8, 51494.7, 46626.1, 45914.1, 44110.8, 40109.4, 38266.9, 40727.0, 37545.4, 37241.1, 33567.6, 32706.2, 33169.0, 34260.2], "peak": "2026-10-29", "trough": "2026-11-20", "turn": "2026-11-23", "vturn": "2026-11-24", "name": "KODEX 코스닥150롱코스피200숏선물"}, "2": {"dates": ["2026-08-21", "2026-08-24", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28", "2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04", "2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11", "2026-09-14", "2026-09-15", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-21", "2026-09-22", "2026-09-23", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22", "2026-10-23", "2026-10-26", "2026-10-27", "2026-10-28", "2026-10-29", "2026-10-30", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06", "2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-16", "2026-11-17", "2026-11-18", "2026-11-19", "2026-11-20", "2026-11-23", "2026-11-24", "2026-11-25"], "close": [14110, 14830, 14500, 14615, 14745, 14820, 14335, 14150, 13730, 13355, 13700, 13620, 13295, 13425, 13250, 13050, 12835, 12900, 12820, 12945, 12720, 12675, 12440, 12530, 12520, 12440, 12445, 13300, 12900, 13305, 13210, 12545, 11945, 11360, 11280, 10885, 11520, 12000, 11670, 12040, 11745, 11600, 11150, 10940, 11115, 10925, 10730, 10880, 10695, 10735, 11175, 10520, 10445, 11025, 11505, 11155, 11055, 10740, 10780, 10665, 11005, 10775, 10490, 10695, 11150], "ma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 13751.5, 13682.0, 13574.25, 13471.25, 13367.0, 13255.75, 13136.75, 13042.25, 12999.75, 12958.25, 12955.75, 12931.25, 12877.5, 12810.0, 12706.75, 12608.25, 12500.0, 12434.25, 12389.25, 12331.75, 12286.5, 12237.75, 12184.0, 12119.5, 12040.0, 11969.75, 11894.0, 11808.25, 11687.25, 11577.0, 11448.5, 11346.75, 11245.5, 11170.5, 11153.75, 11165.0, 11178.5, 11155.25, 11092.25, 11047.75, 10979.0, 10942.0, 10900.75, 10867.75, 10855.5, 10857.25], "vol": [887803.0, 1253121.0, 952073.0, 1641088.0, 715038.0, 1067571.0, 1096872.0, 424450.0, 808145.0, 726233.0, 502839.0, 451637.0, 748982.0, 803526.0, 559534.0, 447220.0, 604234.0, 1067214.0, 593537.0, 636168.0, 546921.0, 490923.0, 609904.0, 620325.0, 482883.0, 589816.0, 535418.0, 1577332.0, 818005.0, 1321481.0, 889175.0, 1284626.0, 669129.0, 1455948.0, 1048459.0, 1574044.0, 1812324.0, 1413301.0, 736242.0, 854569.0, 372544.0, 429667.0, 381152.0, 609515.0, 764794.0, 677797.0, 653336.0, 433190.0, 262507.0, 751227.0, 1541883.0, 780087.0, 870966.0, 401006.0, 615051.0, 437285.0, 600385.0, 340543.0, 340003.0, 331526.0, 233053.0, 347293.0, 323599.0, 521811.0, 918334.0], "vma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 799364.2, 782320.2, 744210.2, 727101.8, 676063.7, 664455.9, 640568.2, 612495.4, 670139.6, 670632.6, 700394.9, 719711.8, 761361.2, 757368.6, 789989.7, 814435.9, 870777.1, 931181.6, 948485.9, 955621.2, 966541.2, 957822.4, 954759.6, 943322.0, 942781.5, 956877.1, 961276.1, 967172.0, 909964.9, 882190.0, 853677.3, 886312.7, 861085.8, 871177.6, 818430.5, 796760.1, 739922.2, 679325.2, 625687.3, 605875.3, 579723.2, 572748.7, 568629.9, 565752.3, 561367.1, 569044.1], "peak": "2026-11-12", "trough": "2026-11-24", "turn": "2026-11-25", "vturn": "2026-11-25", "name": "KoAct 바이오헬스케어액티브"}, "3": {"dates": ["2026-08-21", "2026-08-24", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28", "2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04", "2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11", "2026-09-14", "2026-09-15", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-21", "2026-09-22", "2026-09-23", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22", "2026-10-23", "2026-10-26", "2026-10-27", "2026-10-28", "2026-10-29", "2026-10-30", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06", "2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-16", "2026-11-17", "2026-11-18", "2026-11-19", "2026-11-20", "2026-11-23", "2026-11-24", "2026-11-25"], "close": [6290, 6600, 6480, 6520, 6535, 6565, 6370, 6245, 6100, 5860, 6025, 5995, 5875, 5890, 5810, 5710, 5630, 5670, 5640, 5750, 5555, 5505, 5385, 5470, 5500, 5445, 5465, 5835, 5730, 5865, 5770, 5530, 5230, 4980, 4930, 4700, 5010, 5225, 5140, 5285, 5140, 5185, 5000, 4895, 4975, 4910, 4825, 4860, 4725, 4720, 4920, 4675, 4630, 4905, 5085, 4950, 4925, 4740, 4740, 4720, 4885, 4780, 4715, 4825, 4980], "ma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 6078.0, 6041.25, 5986.5, 5931.75, 5879.25, 5827.5, 5771.5, 5726.25, 5705.75, 5687.25, 5687.5, 5674.75, 5651.5, 5619.25, 5573.75, 5529.75, 5479.25, 5448.25, 5426.0, 5401.0, 5377.75, 5357.0, 5341.0, 5321.75, 5293.0, 5266.75, 5240.0, 5208.0, 5159.25, 5109.0, 5051.75, 5009.25, 4966.5, 4936.5, 4932.75, 4940.5, 4953.0, 4948.75, 4924.5, 4904.5, 4876.25, 4863.5, 4843.25, 4829.0, 4825.5, 4825.75], "vol": [1056238.0, 1250161.0, 1080639.0, 1109882.0, 931421.0, 862816.0, 946846.0, 696328.0, 1670274.0, 1200496.0, 1089556.0, 866887.0, 988454.0, 1244717.0, 861898.0, 831481.0, 1123576.0, 1426242.0, 904617.0, 905266.0, 1387666.0, 628251.0, 1311940.0, 1284526.0, 1118738.0, 882005.0, 792187.0, 2129952.0, 886639.0, 1067933.0, 911255.0, 1094686.0, 1347611.0, 1303499.0, 1448033.0, 2138043.0, 3090343.0, 1405938.0, 921372.0, 853132.0, 477168.0, 745719.0, 445589.0, 852755.0, 1136674.0, 781310.0, 511764.0, 685004.0, 292947.0, 919884.0, 1259253.0, 1125386.0, 744982.0, 431155.0, 689456.0, 505798.0, 423159.0, 427569.0, 351824.0, 472595.0, 300590.0, 380272.0, 370144.0, 657331.0, 1191817.0], "vma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1052389.8, 1068961.1, 1037865.7, 1049430.7, 1058162.9, 1067528.8, 1068488.2, 1060755.2, 1132436.4, 1093254.7, 1086626.6, 1077711.5, 1089101.4, 1107059.3, 1109998.4, 1139305.1, 1204633.2, 1302971.6, 1301956.4, 1302794.1, 1300187.4, 1254662.6, 1260535.9, 1217218.4, 1195629.9, 1196526.6, 1191491.9, 1177470.8, 1105223.4, 1075538.8, 1068136.3, 1085536.2, 1087071.2, 1056939.8, 1013322.6, 975393.7, 893781.4, 760422.2, 711503.8, 683026.4, 663999.6, 655170.7, 636898.3, 633126.1, 623354.8, 626112.0], "peak": "2026-11-12", "trough": "2026-11-24", "turn": "2026-11-25", "vturn": "2026-11-25", "name": "TIGER 기술이전바이오액티브"}, "4": {"dates": ["2026-08-21", "2026-08-24", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28", "2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04", "2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11", "2026-09-14", "2026-09-15", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-21", "2026-09-22", "2026-09-23", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22", "2026-10-23", "2026-10-26", "2026-10-27", "2026-10-28", "2026-10-29", "2026-10-30", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06", "2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-16", "2026-11-17", "2026-11-18", "2026-11-19", "2026-11-20", "2026-11-23", "2026-11-24", "2026-11-25"], "close": [11200, 11525, 11605, 11750, 11585, 11760, 11715, 11595, 11325, 11260, 11320, 11300, 11265, 11125, 11095, 11030, 11080, 10990, 10935, 11020, 10895, 10855, 10900, 10805, 10920, 10830, 10780, 10780, 10860, 10955, 10985, 10705, 10470, 10215, 10260, 10175, 10455, 10580, 10385, 10375, 10215, 10025, 9805, 9755, 9960, 9810, 9820, 9935, 9840, 9880, 10185, 10090, 9855, 9880, 9935, 9680, 9845, 9825, 9830, 9795, 9915, 9680, 9375, 9690, 10015], "ma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 11324.0, 11308.75, 11275.25, 11240.0, 11192.75, 11159.5, 11113.0, 11066.25, 11025.5, 11002.25, 10987.0, 10970.25, 10940.5, 10900.75, 10855.25, 10813.5, 10770.75, 10739.5, 10719.0, 10691.5, 10659.25, 10625.25, 10583.75, 10529.0, 10476.5, 10428.5, 10377.5, 10329.5, 10287.25, 10236.25, 10182.5, 10142.5, 10111.75, 10081.0, 10064.25, 10048.0, 10023.25, 9992.75, 9955.0, 9927.25, 9898.25, 9883.25, 9866.0, 9844.5, 9841.25, 9844.0], "vol": [83.0, 507.0, 665.0, 17.0, 22.0, 15.0, 506.0, 45.0, 19.0, 18.0, 1748.0, 35.0, 42.0, 142.0, 55.0, 4468.0, 87.0, 30.0, 25.0, 157.0, 96.0, 93.0, 51.0, 134.0, 76.0, 1430.0, 236.0, 40.0, 25.0, 231.0, 19.0, 33.0, 2344.0, 5064.0, 162.0, 143.0, 5623.0, 6.0, 29.0, 108.0, 12.0, 1690.0, 150.0, 123.0, 25.0, 21.0, 4733.0, 9758.0, 8346.0, 5.0, 11010.0, 48.0, 7667.0, 81.0, 983.0, 20.0, 10.0, 65.0, 993.0, 7193.0, 1916.0, 17.0, 105.0, 5.0, 1683.0], "vma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 434.3, 434.9, 414.2, 383.6, 389.4, 392.1, 462.9, 449.4, 449.1, 449.4, 460.1, 373.6, 373.5, 488.6, 734.7, 740.0, 523.8, 800.6, 799.4, 799.6, 797.1, 793.0, 872.8, 877.8, 877.2, 874.6, 804.2, 1029.0, 1515.0, 1931.0, 1919.7, 2469.2, 2470.0, 2736.2, 2487.0, 2528.1, 2521.9, 2241.2, 2244.2, 2292.4, 2646.7, 2741.8, 2658.2, 2655.9, 2650.1, 2732.9], "peak": "2026-09-17", "trough": "2026-11-24", "turn": "2026-11-25", "vturn": "2026-11-25", "name": "RISE 내수주플러스"}, "5": {"dates": ["2026-08-21", "2026-08-24", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28", "2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04", "2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11", "2026-09-14", "2026-09-15", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-21", "2026-09-22", "2026-09-23", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22", "2026-10-23", "2026-10-26", "2026-10-27", "2026-10-28", "2026-10-29", "2026-10-30", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06", "2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-16", "2026-11-17", "2026-11-18", "2026-11-19", "2026-11-20", "2026-11-23", "2026-11-24", "2026-11-25"], "close": [12770, 13065, 13440, 13665, 13325, 13750, 13630, 13410, 13140, 13090, 12920, 12770, 12755, 12605, 12495, 12635, 12675, 12500, 12400, 12530, 12550, 12475, 12520, 12445, 12465, 12450, 12320, 12295, 12260, 12270, 12450, 12265, 12175, 11765, 11805, 11775, 12255, 12380, 12160, 12230, 12040, 11880, 11610, 11500, 11740, 11630, 11655, 11790, 11740, 11740, 12150, 11785, 11450, 11400, 11360, 11375, 11115, 11290, 11190, 11250, 11410, 11295, 11195, 11455, 11825], "ma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 12978.5, 12967.5, 12938.0, 12892.0, 12831.0, 12788.0, 12723.0, 12657.5, 12601.75, 12557.75, 12516.75, 12493.25, 12468.0, 12439.0, 12397.0, 12362.5, 12319.5, 12298.5, 12292.5, 12280.5, 12265.5, 12240.0, 12210.25, 12164.75, 12117.5, 12081.25, 12040.25, 12007.0, 11981.75, 11955.75, 11929.25, 11914.25, 11890.25, 11854.0, 11835.75, 11813.5, 11793.5, 11736.5, 11682.0, 11633.5, 11584.5, 11553.0, 11523.75, 11503.0, 11500.75, 11505.0], "vol": [1475.0, 4411.0, 3453.0, 15301.0, 16452.0, 12425.0, 12512.0, 17465.0, 7696.0, 2203.0, 21035.0, 5855.0, 4111.0, 12898.0, 1481.0, 13962.0, 892.0, 246.0, 277.0, 372.0, 39106.0, 995.0, 29238.0, 19802.0, 505.0, 531.0, 314.0, 5622.0, 2151.0, 10063.0, 879.0, 1081.0, 10102.0, 11999.0, 477.0, 2841.0, 6656.0, 1732.0, 1247.0, 7351.0, 2783.0, 2584.0, 2538.0, 619.0, 3334.0, 207.0, 7186.0, 12219.0, 165.0, 5689.0, 5016.0, 659.0, 303.0, 818.0, 5068.0, 4814.0, 1119.0, 441.0, 9877.0, 2666.0, 5462.0, 3905.0, 1316.0, 1046.0, 3395.0], "vma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 7726.1, 9607.6, 9436.9, 10726.1, 10951.1, 10153.8, 9559.1, 8949.2, 8357.0, 8079.8, 8472.8, 7465.0, 7226.3, 7525.9, 7480.9, 7430.7, 6874.6, 7162.9, 7237.1, 7285.6, 7634.6, 5818.4, 5897.9, 4562.9, 3603.8, 3745.2, 3729.0, 4072.6, 4402.4, 4303.1, 4084.4, 4291.3, 4270.2, 3780.2, 3221.2, 3450.8, 3549.4, 3272.6, 3208.0, 3639.5, 3405.2, 3539.2, 3605.2, 3544.2, 3565.5, 3568.6], "peak": "2026-09-17", "trough": "2026-11-24", "turn": "2026-11-25", "vturn": "2026-11-24", "name": "TIGER 200 생활소비재"}, "6": {"dates": ["2026-08-21", "2026-08-24", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28", "2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04", "2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11", "2026-09-14", "2026-09-15", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-21", "2026-09-22", "2026-09-23", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22", "2026-10-23", "2026-10-26", "2026-10-27", "2026-10-28", "2026-10-29", "2026-10-30", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06", "2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-16", "2026-11-17", "2026-11-18", "2026-11-19", "2026-11-20", "2026-11-23", "2026-11-24", "2026-11-25"], "close": [9050, 9640, 9370, 9485, 9540, 9595, 9190, 9050, 8805, 8460, 8695, 8650, 8515, 8560, 8410, 8280, 8090, 8195, 8160, 8300, 8130, 8150, 8025, 8115, 8110, 8100, 8095, 8680, 8530, 8750, 8570, 8115, 7775, 7400, 7275, 6960, 7515, 7700, 7580, 7760, 7545, 7425, 7255, 7180, 7370, 7285, 7195, 7170, 7000, 6980, 7395, 7020, 6985, 7275, 7460, 7315, 7305, 7095, 7080, 7095, 7315, 7175, 7035, 7185, 7445], "ma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 8802.0, 8756.0, 8681.5, 8614.25, 8545.75, 8474.25, 8399.5, 8344.75, 8326.25, 8312.5, 8327.0, 8320.75, 8294.0, 8257.0, 8199.0, 8142.25, 8076.25, 8047.5, 8022.75, 7993.75, 7966.75, 7937.5, 7901.25, 7862.75, 7816.0, 7779.0, 7738.25, 7693.25, 7617.75, 7541.25, 7452.75, 7394.0, 7339.25, 7299.75, 7293.5, 7302.75, 7320.5, 7310.0, 7279.75, 7254.75, 7221.5, 7210.0, 7197.5, 7186.5, 7186.75, 7190.5], "vol": [346324.0, 323925.0, 192184.0, 266532.0, 134520.0, 75247.0, 168885.0, 146315.0, 179738.0, 177484.0, 105093.0, 109372.0, 63538.0, 76947.0, 116485.0, 87774.0, 82727.0, 106576.0, 108549.0, 49649.0, 125350.0, 66228.0, 108341.0, 76762.0, 67044.0, 82155.0, 38880.0, 256584.0, 114241.0, 132711.0, 91579.0, 164019.0, 120011.0, 127138.0, 99310.0, 138252.0, 188574.0, 114513.0, 219023.0, 73524.0, 59116.0, 87141.0, 20827.0, 64625.0, 92077.0, 75404.0, 101187.0, 47866.0, 27674.0, 139933.0, 267060.0, 161889.0, 153640.0, 101707.0, 146020.0, 67564.0, 104994.0, 50672.0, 39172.0, 57789.0, 65762.0, 59525.0, 42152.0, 91576.0, 156988.0], "vma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 145893.2, 134844.5, 121959.6, 117767.5, 108279.0, 104905.2, 105250.6, 98750.4, 104263.8, 100988.9, 98750.3, 98074.6, 100806.9, 103630.6, 106140.1, 105281.4, 107805.3, 113097.6, 113494.5, 119018.2, 120211.9, 116900.2, 117945.9, 113570.2, 112963.4, 114215.0, 113877.4, 116992.8, 106556.9, 102228.6, 102589.6, 111363.7, 111257.2, 112938.6, 111667.1, 114002.6, 110468.2, 106289.2, 103097.1, 94104.6, 93317.9, 93650.1, 92269.4, 93335.6, 94683.1, 97928.7], "peak": "2026-11-12", "trough": "2026-11-23", "turn": "2026-11-24", "vturn": "2026-11-23", "name": "RISE 바이오TOP10액티브"}, "7": {"dates": ["2026-08-21", "2026-08-24", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28", "2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04", "2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11", "2026-09-14", "2026-09-15", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-21", "2026-09-22", "2026-09-23", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22", "2026-10-23", "2026-10-26", "2026-10-27", "2026-10-28", "2026-10-29", "2026-10-30", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06", "2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-16", "2026-11-17", "2026-11-18", "2026-11-19", "2026-11-20", "2026-11-23", "2026-11-24", "2026-11-25"], "close": [10305, 10500, 10515, 10655, 10510, 10720, 10675, 10590, 10185, 10260, 10365, 10435, 10330, 10210, 10235, 10050, 10100, 10060, 9765, 9735, 9600, 9650, 9650, 9535, 9685, 9570, 9565, 9575, 9485, 9540, 9465, 9320, 9205, 9010, 8930, 8785, 9015, 9220, 9065, 8985, 8845, 8610, 8540, 8510, 8625, 8610, 8580, 8735, 8580, 8550, 9090, 8980, 8820, 9020, 8875, 8730, 8620, 8635, 8595, 8575, 8715, 8550, 8135, 8455, 8650], "ma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 10310.0, 10274.75, 10232.25, 10189.0, 10133.0, 10091.75, 10034.25, 9978.75, 9928.0, 9893.0, 9857.0, 9812.0, 9756.25, 9700.0, 9640.0, 9574.75, 9511.5, 9457.25, 9415.25, 9380.25, 9342.75, 9305.0, 9253.0, 9197.5, 9146.25, 9093.25, 9045.25, 8996.0, 8954.0, 8908.75, 8859.25, 8840.5, 8823.5, 8804.25, 8804.75, 8802.0, 8799.25, 8779.5, 8750.25, 8726.75, 8706.25, 8699.75, 8696.75, 8676.5, 8673.75, 8675.0], "vol": [845.0, 1083.0, 6841.0, 8196.0, 5524.0, 3869.0, 982.0, 12438.0, 4251.0, 2093.0, 5699.0, 1791.0, 3803.0, 4750.0, 3190.0, 885.0, 886.0, 1612.0, 6314.0, 989.0, 7428.0, 639.0, 2977.0, 608.0, 1083.0, 3258.0, 2117.0, 1440.0, 1898.0, 597.0, 5067.0, 352.0, 3018.0, 9920.0, 1372.0, 4897.0, 2925.0, 1278.0, 3478.0, 303.0, 4180.0, 1204.0, 281.0, 3107.0, 843.0, 269.0, 24584.0, 31977.0, 5643.0, 564.0, 973.0, 1185.0, 364.0, 12517.0, 1166.0, 67.0, 113.0, 140.0, 10015.0, 389.0, 10336.0, 1341.0, 986.0, 233.0, 1498.0], "vma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 3802.1, 4131.2, 4109.0, 3915.8, 3536.4, 3314.3, 3283.8, 3340.6, 2790.7, 2673.0, 2598.2, 2566.6, 2494.7, 2455.4, 2713.9, 2623.0, 2823.6, 2925.6, 2908.8, 2767.1, 2732.8, 2570.3, 2598.6, 2463.8, 2588.8, 2576.8, 2427.3, 3550.7, 5077.5, 5264.8, 5263.1, 5058.4, 5100.1, 4967.4, 5097.2, 5086.9, 4845.4, 4704.8, 4647.9, 4974.8, 4979.1, 5286.9, 5293.7, 5328.9, 5185.2, 5218.0], "peak": "2026-11-10", "trough": "2026-11-24", "turn": "2026-11-25", "vturn": "2026-11-25", "name": "HANARO e커머스"}, "8": {"dates": ["2026-08-21", "2026-08-24", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28", "2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04", "2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11", "2026-09-14", "2026-09-15", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-21", "2026-09-22", "2026-09-23", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22", "2026-10-23", "2026-10-26", "2026-10-27", "2026-10-28", "2026-10-29", "2026-10-30", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06", "2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-16", "2026-11-17", "2026-11-18", "2026-11-19", "2026-11-20", "2026-11-23", "2026-11-24", "2026-11-25"], "close": [4851.91, 4942.44, 4979.81, 5064.3, 4985.13, 5118.8, 5115.13, 5051.61, 5016.64, 4990.94, 4944.5, 4822.21, 4777.94, 4730.87, 4752.7, 4780.84, 4802.72, 4728.02, 4687.8, 4731.58, 4696.39, 4695.38, 4706.85, 4642.88, 4683.93, 4711.52, 4662.09, 4645.97, 4659.26, 4652.08, 4704.76, 4636.8, 4686.91, 4681.47, 4655.76, 4751.0, 4850.78, 4908.97, 4899.34, 4893.1, 4851.61, 4792.87, 4685.51, 4667.07, 4728.71, 4756.25, 4807.84, 4820.61, 4823.56, 4824.88, 4940.71, 4860.83, 4706.48, 4632.76, 4602.51, 4625.15, 4625.14, 4751.43, 4736.56, 4753.66, 4757.59, 4713.39, 4603.17, 4708.58, 4813.03], "ma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 4893.7945, 4886.0185, 4873.6655, 4860.0175, 4838.9465, 4823.8865, 4803.5225, 4780.8705, 4760.5885, 4742.7195, 4725.7765, 4713.7895, 4704.519, 4699.9675, 4697.4975, 4692.6505, 4691.1585, 4693.5615, 4702.609, 4713.186, 4721.262, 4729.023, 4733.8975, 4732.8305, 4734.04, 4736.279, 4738.5155, 4745.803, 4754.535, 4762.75, 4771.39, 4783.1875, 4794.389, 4795.3675, 4792.932, 4790.2695, 4783.977, 4772.695, 4764.818, 4756.679, 4749.707, 4745.006, 4741.032, 4736.915, 4738.9905, 4743.2065], "vol": [4080933.0, 3015829.0, 4533672.0, 2706647.0, 4449911.0, 3620243.0, 3465829.0, 2282451.0, 4372288.0, 10220013.0, 3027286.0, 2929641.0, 2536153.0, 2255467.0, 6047944.0, 4584144.0, 2037884.0, 1989026.0, 1925005.0, 1369128.0, 2689887.0, 1670088.0, 1711572.0, 1454567.0, 1453329.0, 1335721.0, 1451130.0, 1319408.0, 1149232.0, 1426577.0, 1176998.0, 2080078.0, 2508353.0, 2222131.0, 2011371.0, 2371880.0, 2024584.0, 1392211.0, 1486414.0, 1429405.0, 1657174.0, 1960152.0, 2054459.0, 2028165.0, 1792891.0, 1955098.0, 1911051.0, 1984737.0, 1957773.0, 1861559.0, 2063637.0, 2566247.0, 2122769.0, 1851596.0, 1732924.0, 2060567.0, 1867540.0, 1774473.0, 1516239.0, 1654583.0, 1183297.0, 1932069.0, 2520900.0, 1602545.0, 2058257.0], "vma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 3572474.7, 3502922.4, 3435635.4, 3294530.4, 3231926.4, 3082097.2, 2967871.1, 2867136.2, 2818984.0, 2657831.2, 2218159.5, 2125645.0, 2083166.9, 2081776.9, 2080110.1, 1878281.4, 1767668.2, 1767003.2, 1737162.5, 1715232.9, 1718246.8, 1666611.1, 1681114.4, 1698258.7, 1726938.6, 1743916.7, 1774885.6, 1797881.6, 1831148.1, 1871575.1, 1893324.2, 1937656.1, 1961964.6, 1942685.4, 1924158.6, 1910236.3, 1894670.6, 1886818.4, 1905931.6, 1907422.8, 1918681.7, 1894987.9, 1893583.7, 1916905.8, 1895624.8, 1908893.1], "peak": "2026-11-09", "trough": "2026-11-23", "turn": "2026-11-24", "vturn": "2026-11-25", "name": "음식료·담배"}, "9": {"dates": ["2026-08-21", "2026-08-24", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28", "2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04", "2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11", "2026-09-14", "2026-09-15", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-21", "2026-09-22", "2026-09-23", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-01", "2026-10-02", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22", "2026-10-23", "2026-10-26", "2026-10-27", "2026-10-28", "2026-10-29", "2026-10-30", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06", "2026-11-09", "2026-11-10", "2026-11-11", "2026-11-12", "2026-11-13", "2026-11-16", "2026-11-17", "2026-11-18", "2026-11-19", "2026-11-20", "2026-11-23", "2026-11-24", "2026-11-25"], "close": [11455, 11895, 11900, 12185, 11825, 12200, 12160, 12095, 11985, 11870, 11805, 11500, 11390, 11290, 11350, 11350, 11355, 11170, 10965, 10995, 10935, 10875, 10820, 10740, 10890, 10900, 10810, 10730, 10785, 10740, 10785, 10720, 10685, 10720, 10665, 10745, 10970, 11080, 10995, 10825, 10690, 10650, 10385, 10375, 10520, 10470, 10475, 10695, 10650, 10735, 11090, 10985, 10785, 10690, 10610, 10465, 10440, 10590, 10580, 10590, 10605, 10520, 10195, 10300, 10650], "ma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 11637.0, 11611.0, 11560.0, 11506.0, 11433.75, 11387.0, 11322.0, 11254.5, 11186.25, 11126.25, 11069.75, 11018.75, 10979.75, 10944.5, 10916.0, 10881.75, 10851.5, 10832.25, 10827.75, 10829.25, 10820.75, 10808.5, 10797.25, 10775.5, 10757.25, 10738.75, 10717.25, 10700.5, 10698.75, 10692.0, 10691.75, 10707.0, 10720.25, 10725.25, 10723.75, 10721.0, 10707.0, 10680.5, 10656.0, 10635.25, 10623.5, 10619.25, 10612.75, 10603.25, 10599.5, 10606.0], "vol": [20875.0, 38320.0, 26422.0, 152305.0, 68230.0, 86088.0, 75964.0, 93379.0, 40905.0, 41000.0, 19228.0, 110379.0, 113675.0, 32756.0, 30313.0, 22230.0, 21159.0, 9437.0, 47239.0, 5968.0, 14420.0, 18828.0, 29779.0, 16542.0, 19812.0, 7015.0, 10998.0, 13866.0, 22237.0, 16528.0, 14927.0, 4624.0, 15701.0, 17827.0, 15988.0, 31954.0, 18075.0, 14176.0, 25625.0, 32344.0, 13889.0, 11789.0, 14067.0, 13000.0, 10313.0, 1913.0, 17108.0, 16849.0, 15095.0, 7040.0, 40549.0, 26055.0, 17374.0, 25006.0, 29736.0, 21362.0, 5465.0, 29342.0, 10352.0, 7610.0, 6328.0, 12249.0, 15785.0, 10460.0, 55394.0], "vma": [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 52793.6, 52470.8, 51496.2, 51664.1, 44875.9, 42455.1, 38501.4, 35253.1, 31277.5, 30344.0, 29120.5, 28905.4, 23617.7, 18719.0, 17972.5, 17256.2, 17742.5, 17588.2, 17825.2, 16744.5, 18063.3, 18036.8, 17684.8, 16899.2, 16722.1, 16247.1, 15992.0, 16297.5, 16446.7, 16089.6, 15615.2, 16896.3, 17967.8, 18051.5, 18410.5, 19097.8, 18568.2, 17937.8, 18696.0, 17932.4, 16695.7, 16317.6, 16340.6, 16426.5, 16299.5, 18553.6], "peak": "2026-11-09", "trough": "2026-11-24", "turn": "2026-11-25", "vturn": "2026-11-25", "name": "HANARO Fn K-푸드"}}</script>
+<script>
+const tip=document.getElementById('tip');
+const DATA=JSON.parse(document.getElementById('chart-data').textContent);
+function show(e,h){tip.innerHTML=h;tip.style.display='block';
+ const w=tip.offsetWidth,hh=tip.offsetHeight;let x=e.clientX+14,y=e.clientY+14;
+ if(x+w>innerWidth-8)x=e.clientX-w-14;if(y+hh>innerHeight-8)y=e.clientY-hh-14;
+ tip.style.left=x+'px';tip.style.top=y+'px';}
+function hide(){tip.style.display='none';}
+const f=(v,d)=>v==null?'-':Number(v).toLocaleString('ko-KR',{maximumFractionDigits:d});
+document.querySelectorAll('svg[data-uid]').forEach(svg=>{
+ const c=DATA[svg.dataset.uid],hit=svg.querySelector('.hit'),cr=svg.querySelector('.cross');
+ const L=+hit.dataset.l,xw=+hit.dataset.xw,n=+hit.dataset.n,dec=c.close[0]<1000?2:0;
+ hit.addEventListener('mousemove',e=>{
+  const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;const q=p.matrixTransform(svg.getScreenCTM().inverse());
+  const k=Math.max(0,Math.min(n-1,Math.round((q.x-L)/xw)));const x=L+k*xw;
+  cr.setAttribute('x1',x);cr.setAttribute('x2',x);cr.setAttribute('visibility','visible');
+  show(e,`<b>${c.dates[k]}</b><div class="r"><span>종가</span><span>${f(c.close[k],dec)}</span></div>`+
+   `<div class="r"><span>MA20</span><span>${f(c.ma[k],2)}</span></div>`+
+   `<div class="r"><span>거래량</span><span>${f(c.vol[k],0)}</span></div>`+
+   `<div class="r"><span>VMA20</span><span>${f(c.vma[k],0)}</span></div>`);});
+ hit.addEventListener('mouseleave',()=>{cr.setAttribute('visibility','hidden');hide();});
+});
+document.querySelectorAll('circle[data-tip]').forEach(d=>{
+ d.addEventListener('mousemove',e=>show(e,d.dataset.tip));d.addEventListener('mouseleave',hide);});
+document.querySelectorAll('table.sortable').forEach(t=>{
+ t.querySelectorAll('th').forEach((th,i)=>th.addEventListener('click',()=>{
+  const asc=th.getAttribute('aria-sort')==='descending';
+  t.querySelectorAll('th').forEach(h=>h.removeAttribute('aria-sort'));
+  th.setAttribute('aria-sort',asc?'ascending':'descending');
+  const rows=[...t.tBodies[0].rows];
+  rows.sort((a,b)=>{const x=a.cells[i].dataset.v,y=b.cells[i].dataset.v;
+   const nx=parseFloat(x),ny=parseFloat(y);
+   const r=(isNaN(nx)||isNaN(ny))?String(x).localeCompare(String(y),'ko'):nx-ny;return asc?r:-r;});
+  rows.forEach(r=>t.tBodies[0].appendChild(r));
+  PAGERS.tbl&&PAGERS.tbl.go(1);}));});
+
+/* ---- 페이지 넘김 ---- */
+const PER=8, BLOCK=10, PAGERS={};
+function makePager(nav, getItems){
+ let cur=1;
+ const pages=()=>Math.max(1,Math.ceil(getItems().length/PER));
+ function btn(label,page,opts={}){const b=document.createElement('button');b.type='button';b.textContent=label;
+  if(opts.title)b.title=opts.title;if(opts.current)b.setAttribute('aria-current','page');
+  if(opts.disabled)b.disabled=true;else b.addEventListener('click',()=>go(page,true));return b;}
+ function render(){
+  const n=pages(),items=getItems();nav.innerHTML='';
+  const start=Math.floor((cur-1)/BLOCK)*BLOCK+1,end=Math.min(n,start+BLOCK-1);
+  nav.append(btn('‹',cur-1,{disabled:cur===1,title:'이전 페이지'}));
+  if(start>1)nav.append(btn('…',start-1,{title:`${start-1}페이지`}));
+  for(let p=start;p<=end;p++)nav.append(btn(String(p),p,{current:p===cur}));
+  if(end<n)nav.append(btn('…',end+1,{title:`${end+1}페이지`}));
+  nav.append(btn('›',cur+1,{disabled:cur===n,title:'다음 페이지'}));
+  const a=(cur-1)*PER+1,b=Math.min(cur*PER,items.length);
+  const info=document.createElement('span');info.className='info';
+  info.textContent=`${items.length}개 중 ${a}–${b}`;nav.append(info);
+  if(n<=1)nav.style.display='none';}
+ function go(p,scroll){cur=Math.min(Math.max(1,p),pages());
+  getItems().forEach((el,i)=>{el.hidden=!(i>=(cur-1)*PER&&i<cur*PER);});render();
+  if(scroll)nav.scrollIntoView({block:'start',behavior:'smooth'});}
+ go(1);return {go,pageOf:i=>Math.floor(i/PER)+1};}
+const tbody=document.querySelector('table.sortable tbody');
+if(tbody)PAGERS.tbl=makePager(document.getElementById('pager-tbl'),()=>[...tbody.rows]);
+const cardEls=[...document.querySelectorAll('.cards > .card')];
+if(cardEls.length)PAGERS.cards=makePager(document.getElementById('pager-cards'),()=>cardEls);
+/* 표 이름·산점도 점 → 해당 차트 페이지로 이동 */
+document.querySelectorAll('a[href^="#card-"]').forEach(a=>a.addEventListener('click',e=>{
+ const el=document.getElementById(a.getAttribute('href').slice(1));if(!el||!PAGERS.cards)return;
+ e.preventDefault();PAGERS.cards.go(PAGERS.cards.pageOf(cardEls.indexOf(el)));
+ el.scrollIntoView({block:'start',behavior:'smooth'});}));
+</script></body></html>
